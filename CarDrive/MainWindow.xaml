@@ -14,14 +14,14 @@
                 <MenuItem Header="_Close" />
             </MenuItem>
         </Menu>
-        <local:ControlBar DockPanel.Dock="Top" />
+        <local:ControlBar x:Name="ControlBar" DockPanel.Dock="Top" />
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" />
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
-            <local:Simulator Grid.Column="0" BorderThickness="10" />
-            <local:Simulator Grid.Column="1" BorderThickness="10" />
+            <local:Simulator x:Name="OriginSimulator" Grid.Column="0" BorderThickness="10" />
+            <local:Simulator x:Name="ContractSimulator" Grid.Column="1" BorderThickness="10" />
         </Grid>
     </DockPanel>
 </Window>
