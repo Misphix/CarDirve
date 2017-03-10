@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Controls;
 
@@ -40,12 +41,14 @@ namespace CarDrive.Ui
             MapLoader loader = new MapLoader();
             string[] files = Directory.GetFiles(MapDirectory);
 
+            Debug.Assert(files.Length > 0);
+
             foreach(string file in files)
             {
                 Maps.Add(loader.LoadMap(file));
             }
 
-            SelectedMap = (Maps.Count != 0) ? Maps[0] : null;
+            SelectedMap = Maps[0];
         }
     }
 }

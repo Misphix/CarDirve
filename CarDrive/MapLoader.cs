@@ -20,14 +20,16 @@ namespace CarDrive
             var result = ContentParser(content);
             map.StartPoint = result.startPoint;
             map.Obstacles = result.obstacles;
+            map.CanvasTransform = result.canvasTransform;
 
             return map;
         }
 
-        private (Point startPoint, List<Polyline> obstacles) ContentParser(string[] content)
+        private (Point startPoint, List<Polyline> obstacles, double canvasTransform) ContentParser(string[] content)
         {
             List<Polyline> shapes = new List<Polyline>();
             Point startPoint = new Point();
+            double canvasTransform = 1;
 
             foreach (string line in content)
             {
@@ -42,12 +44,15 @@ namespace CarDrive
                     case "Wall":
                         shapes.Add(ParseWall(data));
                         break;
+                    case "CanvasTransform":
+                        canvasTransform = Convert.ToDouble(data.Trim());
+                        break;
                     default:
                         throw new InvalidDataException();
                 }
             }
 
-            return (startPoint, shapes);
+            return (startPoint, shapes, canvasTransform);
         }
 
         private Point ParseStartPoint(string data)
@@ -76,10 +81,9 @@ namespace CarDrive
             try
             {
                 data = Regex.Replace(data.Trim(), @"\(|\)", "");
-                point.X = Convert.ToDouble(data.Split(',')[0]);
-                point.Y = Convert.ToDouble(data.Split(',')[1]);
+                point = Point.Parse(data);
             }
-            catch (IndexOutOfRangeException e)
+            catch (FormatException e)
             {
                 throw new InvalidDataException(e.Message);
             }

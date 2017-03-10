@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace CarDrive
 {
@@ -10,7 +11,6 @@ namespace CarDrive
         public MainWindow()
         {
             InitializeComponent();
-            InitializeMap();
         }
 
         private void InitializeMap()
@@ -19,6 +19,11 @@ namespace CarDrive
             ControlBar.MapChangeNotify += ContractSimulator.ChangeMap;
             OriginSimulator.ChangeMap(ControlBar.SelectedMap);
             ContractSimulator.ChangeMap(ControlBar.SelectedMap);
+        }
+
+        private void MainWindow_OnContentRendered(object sender, EventArgs e)
+        {
+            InitializeMap();
         }
     }
 }
