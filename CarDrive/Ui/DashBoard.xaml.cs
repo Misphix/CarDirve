@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using CarDrive.Algorithms;
 
-namespace CarDrive
+namespace CarDrive.Ui
 {
     /// <summary>
     /// UserControl1.xaml 的互動邏輯

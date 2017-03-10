@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace CarDrive
+namespace CarDrive.Ui
 {
     /// <summary>
     /// Simulator.xaml 的互動邏輯

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CarDrive"
+        xmlns:ui="clr-namespace:CarDrive.Ui"
         mc:Ignorable="d"
         Title="Car Drive" Height="600" Width="800">
     <DockPanel>
@@ -14,14 +14,14 @@
                 <MenuItem Header="_Close" />
             </MenuItem>
         </Menu>
-        <local:ControlBar x:Name="ControlBar" DockPanel.Dock="Top" />
+        <ui:ControlBar x:Name="ControlBar" DockPanel.Dock="Top" />
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*" />
                 <ColumnDefinition Width="0.5*" />
             </Grid.ColumnDefinitions>
-            <local:Simulator x:Name="OriginSimulator" Grid.Column="0" BorderThickness="10" />
-            <local:Simulator x:Name="ContractSimulator" Grid.Column="1" BorderThickness="10" />
+            <ui:Simulator x:Name="OriginSimulator" Grid.Column="0" BorderThickness="10" />
+            <ui:Simulator x:Name="ContractSimulator" Grid.Column="1" BorderThickness="10" />
         </Grid>
     </DockPanel>
 </Window>

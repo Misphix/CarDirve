@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Controls;
 
-namespace CarDrive
+namespace CarDrive.Ui
 {
     /// <summary>
     /// ControlBar.xaml 的互動邏輯
@@ -31,8 +31,7 @@ namespace CarDrive
         public ControlBar()
         {
             LoadMap();
-            InitializeComponent();
-            
+            InitializeComponent(); 
         }
 
         private void LoadMap()

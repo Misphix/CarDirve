@@ -63,18 +63,18 @@
     </ApplicationDefinition>
     <Compile Include="Algorithms\NormalAlgorithm.cs" />
     <Compile Include="MapLoader.cs" />
-    <Compile Include="UIs\ControlBar.xaml.cs">
+    <Compile Include="Ui\ControlBar.xaml.cs">
       <DependentUpon>ControlBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UIs\DashBoard.xaml.cs">
+    <Compile Include="Ui\DashBoard.xaml.cs">
       <DependentUpon>DashBoard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="UIs\Simulator.xaml.cs">
+    <Compile Include="Ui\Simulator.xaml.cs">
       <DependentUpon>Simulator.xaml</DependentUpon>
     </Compile>
-    <Page Include="UIs\ControlBar.xaml">
+    <Page Include="Ui\ControlBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -90,11 +90,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UIs\DashBoard.xaml">
+    <Page Include="Ui\DashBoard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UIs\Simulator.xaml">
+    <Page Include="Ui\Simulator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
