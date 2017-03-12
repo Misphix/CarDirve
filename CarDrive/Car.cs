@@ -1,11 +1,35 @@
-﻿using System.Windows;
+﻿using CarDrive.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Shapes;
 
 namespace CarDrive
 {
-    public class Car
+    class Car
     {
+        private double _angle;
         public Point Center { get; set; }
-        public double FaceAngle { get; private set; }
+        public double FaceAngle
+        {
+            get
+            {
+                return _angle;
+            }
+            private set
+            {
+                if (value > 360)
+                {
+                    _angle = value - 360;
+                }
+                if (value < 0)
+                {
+                    _angle = value + 360;
+                }
+                _angle = value;
+            }
+        }
+        public double FaceRadian => FaceAngle * Math.PI / 180;
         public double Radius { get; }
 
         public Car()
@@ -14,23 +38,123 @@ namespace CarDrive
             Radius = 3;
         }
 
-        public double GetDistanceLeft()
+        public double GetDistanceLeft(List<Polyline> obstacles)
         {
-            double distance = 0;
+            return GetDistanceFromDegree(obstacles, 45);
+        }
+
+        public double GetDistanceForward(List<Polyline> obstacles)
+        {
+            return GetDistanceFromDegree(obstacles, 0);
+        }
+
+        public double GetDistanceRight(List<Polyline> obstacles)
+        {
+            return GetDistanceFromDegree(obstacles, -45);
+        }
+
+        private double GetDistanceFromDegree(List<Polyline> obstacles, double degree)
+        {
+            double distance = Double.MaxValue, bonusRadian = degree * Math.PI / 180;
+
+            Line laser = new Line()
+            {
+                X1 = Center.X,
+                Y1 = Center.Y,
+                X2 = Center.X + Math.Cos(FaceRadian + bonusRadian),
+                Y2 = Center.Y + Math.Sin(FaceRadian + bonusRadian)
+            };
+
+            foreach (Polyline polyLine in obstacles)
+            {
+                var points = polyLine.Points;
+                for (int i = 0; i < points.Count - 1; ++i)
+                {
+                    try
+                    {
+                        Line obstacle = new Line()
+                        {
+                            X1 = points[i].X,
+                            Y1 = points[i].Y,
+                            X2 = points[i + 1].X,
+                            Y2 = points[i + 1].Y
+                        };
+                        Point intersectionPoint = Intersect(laser, obstacle);
+                        distance = Math.Min(distance, GetTwoPointDistance(Center, intersectionPoint));
+                    }
+                    catch (NoIntersectException)
+                    {
+                        continue;
+                    }
+                }
+            }
 
             return distance;
         }
 
-        public double GetDistanceForward()
+        /// <summary>
+        /// Get the intersection point.
+        /// </summary>
+        /// <param name="laser">Laser's vector.</param>
+        /// <param name="obstacle">Obstacle's data.</param>
+        /// <returns>Intersection point</returns>
+        /// <exception cref="NoIntersectException">There is no intersection found.</exception>
+        private Point Intersect(Line laser, Line obstacle)
         {
-            double distance = 0;
+            // ax - y = b
+            Point intersectPoint = new Point();
+            var laserPara = GenerateLinearEquations(laser);
+            var obstaclePara = GenerateLinearEquations(obstacle);
+            // Ax + By = C
+            // delta = A1*B2 - A2*B1
+            // 1 is laser, 2 is obstacle
+            double delta = laserPara.coefficientX * obstaclePara.coefficientY - obstaclePara.coefficientX * laserPara.coefficientY;
+            if (delta == 0)
+            {
+                throw new NoIntersectException();
+            }
 
-            return distance;
+            // x = (B2*C1 - B1*C2)/delta;
+            // y = (A1*C2 - A2*C1)/delta;
+            intersectPoint.X = (obstaclePara.coefficientY * laserPara.constant - laserPara.coefficientY * obstaclePara.constant) / delta;
+            intersectPoint.Y = (laserPara.coefficientX * obstaclePara.constant - obstaclePara.coefficientX * laserPara.constant) / delta;
+
+            // Check if point in line segmentation
+            double obsMinX = Math.Min(obstacle.X1, obstacle.X2);
+            double obsMaxX = Math.Max(obstacle.X1, obstacle.X2);
+            double obsMinY = Math.Min(obstacle.Y1, obstacle.Y2);
+            double obsMaxY = Math.Max(obstacle.Y1, obstacle.Y2);
+            if (intersectPoint.X < obsMinX || intersectPoint.X > obsMaxX || intersectPoint.Y < obsMinY || intersectPoint.Y > obsMaxY)
+            {
+                throw new NoIntersectException();
+            }
+
+            // Check if point in the right way of vector
+            if ((intersectPoint.X - laser.X1) * (laser.X2 - laser.X1) < 0)
+            {
+                throw new NoIntersectException();
+            }
+            if ((intersectPoint.Y - laser.Y1) * (laser.Y2 - laser.Y1) < 0)
+            {
+                throw new NoIntersectException();
+            }
+
+            return intersectPoint;
         }
 
-        public double GetDistanceRight()
+        private (double coefficientX, double coefficientY, double constant) GenerateLinearEquations(Line line)
         {
-            double distance = 0;
+            // ax - y = b
+            double cofficientX = (line.X2 - line.X1 == 0) ? 1 : (line.Y2 - line.Y1) / (line.X2 - line.X1);
+            double cofficientY = (line.X2 - line.X1 == 0) ? 0 : -1;
+            double constant = cofficientX * line.X1 + cofficientY * line.Y1;
+
+            return (cofficientX, cofficientY, constant);
+        }
+
+        private double GetTwoPointDistance(Point start, Point end)
+        {
+            double distance = Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
 
             return distance;
         }

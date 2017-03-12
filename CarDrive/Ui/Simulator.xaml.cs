@@ -10,12 +10,13 @@ namespace CarDrive.Ui
     /// <summary>
     /// Simulator.xaml 的互動邏輯
     /// </summary>
-    public partial class Simulator : UserControl
+    partial class Simulator : UserControl
     {
         private Map _map;
         private Car _car;
         private delegate void Refresh();
         private Refresh refresh;
+        private double StrokeWidth => 2 / Map.CanvasTransform;
         private double CanvasWidth => MapField.ActualWidth;
         private double CanvasHeight => MapField.ActualHeight;
         private double _obstacleWidth, _obstacleHeight;
@@ -61,7 +62,7 @@ namespace CarDrive.Ui
                 {
                     Points = TranslateCoordiantes(line.Points),
                     Stroke = Brushes.SlateGray,
-                    StrokeThickness = 1,
+                    StrokeThickness = StrokeWidth,
                     FillRule = FillRule.EvenOdd
                 };
                 MapField.Children.Add(newLine);
@@ -74,7 +75,7 @@ namespace CarDrive.Ui
             ellipse.Height = _car.Radius * 2;
             ellipse.Width = _car.Radius * 2;
             ellipse.Stroke = Brushes.SlateGray;
-            ellipse.StrokeThickness = 1;
+            ellipse.StrokeThickness = StrokeWidth;
             Point center = TranslateCoordinate(_car.Center);
             Canvas.SetLeft(ellipse, center.X - _car.Radius);
             Canvas.SetTop(ellipse, center.Y - _car.Radius);
@@ -83,10 +84,10 @@ namespace CarDrive.Ui
             Line direction = new Line();
             direction.X1 = center.X;
             direction.Y1 = center.Y;
-            direction.X2 = center.X + _car.Radius * Math.Cos(_car.FaceAngle * Math.PI / 180);
-            direction.Y2 = center.Y - _car.Radius * Math.Sin(_car.FaceAngle * Math.PI / 180);
+            direction.X2 = center.X + _car.Radius * Math.Cos(_car.FaceRadian);
+            direction.Y2 = center.Y - _car.Radius * Math.Sin(_car.FaceRadian);
             direction.Stroke = Brushes.SlateGray;
-            direction.StrokeThickness = 1;
+            direction.StrokeThickness = StrokeWidth;
             MapField.Children.Add(direction);
         }
 

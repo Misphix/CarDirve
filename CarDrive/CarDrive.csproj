@@ -63,6 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="Algorithms\NormalAlgorithm.cs" />
     <Compile Include="Car.cs" />
+    <Compile Include="Exceptions\LineParallelException.cs" />
     <Compile Include="MapLoader.cs" />
     <Compile Include="Ui\ControlBar.xaml.cs">
       <DependentUpon>ControlBar.xaml</DependentUpon>

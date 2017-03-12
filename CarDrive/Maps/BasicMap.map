@@ -1,4 +1,4 @@
 StarPoint: (0, 0)
-CanvasTransform: 5
+CanvasTransform: 7
 Wall: (-6, 0); (-6, 22); (18, 22); (18, 37)
 Wall: (6, 0); (6, 10); (30, 10); (30, 37)
