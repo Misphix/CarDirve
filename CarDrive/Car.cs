@@ -9,6 +9,8 @@ namespace CarDrive
     class Car
     {
         private double _angle;
+        public delegate void Redraw();
+        public event Redraw Render;
         public Point Center { get; set; }
         public double FaceAngle
         {
@@ -29,13 +31,42 @@ namespace CarDrive
                 _angle = value;
             }
         }
-        public double FaceRadian => FaceAngle * Math.PI / 180;
+
+        public double FaceRadian => TransferToRadian(FaceAngle);
         public double Radius { get; }
 
         public Car()
         {
             FaceAngle = 90;
             Radius = 3;
+        }
+
+        /// <summary>
+        /// Move the car.
+        /// </summary>
+        /// <param name="degree">The steering wheel degree.</param>
+        /// <exception cref="ArgumentException">Degree is larger than 40 degree.</exception>
+        public void Move(double degree)
+        {
+            if (Math.Abs(degree) > 40)
+            {
+                throw new ArgumentException();
+            }
+            double x = Center.X + Math.Cos(TransferToRadian(FaceAngle + degree)) + Math.Sin(TransferToRadian(degree)) * Math.Sin(FaceRadian);
+            double y = Center.Y + Math.Sin(TransferToRadian(FaceAngle + degree)) - Math.Sin(TransferToRadian(degree)) * Math.Cos(FaceRadian);
+            Center = new Point(x, y);
+            FaceAngle = FaceAngle - TransferToDegree(Math.Asin(2 * Math.Sin(TransferToRadian(degree)) / (2 * Radius)));
+            Render?.Invoke();
+        }
+
+        private double TransferToRadian(double degree)
+        {
+            return degree * Math.PI / 180;
+        }
+
+        private double TransferToDegree(double radian)
+        {
+            return radian * 180 / Math.PI;
         }
 
         public double GetDistanceLeft(List<Polyline> obstacles)
@@ -84,7 +115,6 @@ namespace CarDrive
                     }
                     catch (NoIntersectException)
                     {
-                        continue;
                     }
                 }
             }

@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using CarDrive.Controller;
 
 namespace CarDrive.Ui
 {
@@ -13,13 +15,14 @@ namespace CarDrive.Ui
     partial class Simulator : UserControl
     {
         private Map _map;
-        private Car _car;
+        private readonly Car _car;
         private delegate void Refresh();
-        private Refresh refresh;
+        private readonly Refresh _refresh;
         private double StrokeWidth => 2 / Map.CanvasTransform;
         private double CanvasWidth => MapField.ActualWidth;
         private double CanvasHeight => MapField.ActualHeight;
         private double _obstacleWidth, _obstacleHeight;
+        private IController _controller;
 
         private Map Map
         {
@@ -31,6 +34,7 @@ namespace CarDrive.Ui
             {
                 _map = value;
                 _car.Center = Map.StartPoint;
+                _car.Render += Render;
                 SetObstacleWidth();
                 SetbstaclesHeight();
             }
@@ -40,9 +44,10 @@ namespace CarDrive.Ui
         {
             InitializeComponent();
             _car = new Car();
-            refresh = ClearMapField;
-            refresh += DrawMap;
-            refresh += DrawCar;
+            _refresh = ClearMapField;
+            _refresh += DrawMap;
+            _refresh += DrawCar;
+            _controller = new HumanController(_car);
         }
 
         private void ClearMapField()
@@ -71,24 +76,33 @@ namespace CarDrive.Ui
 
         private void DrawCar()
         {
-            Ellipse ellipse = new Ellipse();
-            ellipse.Height = _car.Radius * 2;
-            ellipse.Width = _car.Radius * 2;
-            ellipse.Stroke = Brushes.SlateGray;
-            ellipse.StrokeThickness = StrokeWidth;
+            Ellipse ellipse = new Ellipse
+            {
+                Height = _car.Radius * 2,
+                Width = _car.Radius * 2,
+                Stroke = Brushes.SlateGray,
+                StrokeThickness = StrokeWidth
+            };
             Point center = TranslateCoordinate(_car.Center);
             Canvas.SetLeft(ellipse, center.X - _car.Radius);
             Canvas.SetTop(ellipse, center.Y - _car.Radius);
             MapField.Children.Add(ellipse);
 
-            Line direction = new Line();
-            direction.X1 = center.X;
-            direction.Y1 = center.Y;
-            direction.X2 = center.X + _car.Radius * Math.Cos(_car.FaceRadian);
-            direction.Y2 = center.Y - _car.Radius * Math.Sin(_car.FaceRadian);
-            direction.Stroke = Brushes.SlateGray;
-            direction.StrokeThickness = StrokeWidth;
+            Line direction = new Line
+            {
+                X1 = center.X,
+                Y1 = center.Y,
+                X2 = center.X + _car.Radius * Math.Cos(_car.FaceRadian),
+                Y2 = center.Y - _car.Radius * Math.Sin(_car.FaceRadian),
+                Stroke = Brushes.SlateGray,
+                StrokeThickness = StrokeWidth
+            };
             MapField.Children.Add(direction);
+        }
+
+        public void Start()
+        {
+            _controller.Start();
         }
 
         public void ChangeMap(Map map)
@@ -99,7 +113,7 @@ namespace CarDrive.Ui
 
         private void Render()
         {
-            Dispatcher.Invoke(refresh);
+            Dispatcher.Invoke(_refresh);
         }
 
         private PointCollection TranslateCoordiantes(PointCollection pointCollection)
@@ -164,6 +178,13 @@ namespace CarDrive.Ui
             {
                 Render();
             }
+        }
+
+        private void Simulator_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var window = Window.GetWindow(this);
+            Debug.Assert(window != null);
+            window.KeyDown += _controller.HandlerKeyPress;
         }
     }
 }

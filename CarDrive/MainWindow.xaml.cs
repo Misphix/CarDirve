@@ -16,14 +16,15 @@ namespace CarDrive
         private void InitializeMap()
         {
             ControlBar.MapChangeNotify += OriginSimulator.ChangeMap;
-            ControlBar.MapChangeNotify += ContractSimulator.ChangeMap;
+            //ControlBar.MapChangeNotify += ContractSimulator.ChangeMap;
             OriginSimulator.ChangeMap(ControlBar.SelectedMap);
-            ContractSimulator.ChangeMap(ControlBar.SelectedMap);
+            //ContractSimulator.ChangeMap(ControlBar.SelectedMap);
         }
 
         private void MainWindow_OnContentRendered(object sender, EventArgs e)
         {
             InitializeMap();
+            OriginSimulator.Start();
         }
     }
 }

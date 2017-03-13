@@ -77,7 +77,7 @@ namespace CarDrive
 
         private Point ParsePoint(string data)
         {
-            Point point = new Point();
+            Point point;
             try
             {
                 data = Regex.Replace(data.Trim(), @"\(|\)", "");
