@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace CarDrive
 {
@@ -8,6 +9,12 @@ namespace CarDrive
     /// </summary>
     public partial class MainWindow : Window
     {
+        enum Status
+        {
+            Play, Pause, Stop
+        }
+        private Status _status = Status.Stop;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,7 +31,39 @@ namespace CarDrive
         private void MainWindow_OnContentRendered(object sender, EventArgs e)
         {
             InitializeMap();
-            OriginSimulator.Start();
+        }
+
+        private void PlayCommandOnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            OriginSimulator.Start(ControlBar.SpeedValue.Value);
+            _status = Status.Play;
+        }
+
+        private void PlayCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _status != Status.Play;
+        }
+
+        private void PauseCommandOnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            OriginSimulator.Pause();
+            _status = Status.Pause;
+        }
+
+        private void PauseCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _status == Status.Play;
+        }
+
+        private void StopCommandOnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            OriginSimulator.Stop();
+            _status = Status.Stop;
+        }
+
+        private void StopCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _status != Status.Stop;
         }
     }
 }

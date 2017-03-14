@@ -1,6 +1,7 @@
 ﻿using CarDrive.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Resources;
 using System.Windows;
 using System.Windows.Shapes;
 
@@ -67,6 +68,13 @@ namespace CarDrive
         private double TransferToDegree(double radian)
         {
             return radian * 180 / Math.PI;
+        }
+
+        public void Reset()
+        {
+            Center = new Point(0, 0);
+            FaceAngle = 90;
+            Render();
         }
 
         public double GetDistanceLeft(List<Polyline> obstacles)

@@ -100,9 +100,19 @@ namespace CarDrive.Ui
             MapField.Children.Add(direction);
         }
 
-        public void Start()
+        public void Start(double speed)
         {
-            _controller.Start();
+            _controller.Start(speed);
+        }
+
+        public void Pause()
+        {
+            _controller.Pause();
+        }
+
+        public void Stop()
+        {
+            _controller.Stop();
         }
 
         public void ChangeMap(Map map)

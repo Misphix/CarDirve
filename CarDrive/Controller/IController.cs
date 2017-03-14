@@ -4,7 +4,9 @@ namespace CarDrive.Controller
 {
     interface IController
     {
-        void Start();
+        void Start(double speed);
+        void Pause();
+        void Stop();
         void HandlerKeyPress(object sender, KeyEventArgs e);
     }
 }

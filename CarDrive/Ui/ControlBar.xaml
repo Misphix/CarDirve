@@ -8,14 +8,15 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <ToolBarTray>
         <ToolBar>
-            <Button Command="Play" Content="Play" />
+            <Button Name="PlayButton" Command="Play" Content="Play" />
             <Button Command="Pause" Content="Pause" />
             <Button Command="Stop" Content="Stop" />
             <TextBlock Text="Map" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20, 0, 5, 0" />
             <ComboBox ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" DisplayMemberPath="Name"
+                      IsEnabled="{Binding ElementName=PlayButton, Path=IsEnabled, UpdateSourceTrigger=PropertyChanged}"
                       Width="100" />
             <TextBlock Text="Speed" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20, 0, 5, 0" />
-            <Slider Width="100" Maximum="100" IsSnapToTickEnabled="True" Name="SpeedValue" ToolTip="Speed bar" Value="20" />
+            <Slider Width="100" Minimum="1" Maximum="100" IsSnapToTickEnabled="True" Name="SpeedValue" ToolTip="Speed bar" Value="20" />
             <TextBox Text="{Binding ElementName=SpeedValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
         </ToolBar>
     </ToolBarTray>
