@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using CarDrive.Controller;
@@ -22,7 +21,7 @@ namespace CarDrive.Ui
         private double CanvasWidth => MapField.ActualWidth;
         private double CanvasHeight => MapField.ActualHeight;
         private double _obstacleWidth, _obstacleHeight;
-        private IController _controller;
+        private readonly Controller.Controller _controller;
 
         private Map Map
         {
@@ -34,6 +33,7 @@ namespace CarDrive.Ui
             {
                 _map = value;
                 _car.Center = Map.StartPoint;
+                _car.Obstacles = Map.Obstacles;
                 _car.Render += Render;
                 SetObstacleWidth();
                 SetbstaclesHeight();

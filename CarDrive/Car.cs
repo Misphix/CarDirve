@@ -1,7 +1,6 @@
 ﻿using CarDrive.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Resources;
 using System.Windows;
 using System.Windows.Shapes;
 
@@ -13,6 +12,8 @@ namespace CarDrive
         public delegate void Redraw();
         public event Redraw Render;
         public Point Center { get; set; }
+        public List<Polyline> Obstacles { private get; set; }
+        public double Left, Forward, Right;
         public double FaceAngle
         {
             get
@@ -57,7 +58,16 @@ namespace CarDrive
             double y = Center.Y + Math.Sin(TransferToRadian(FaceAngle + degree)) - Math.Sin(TransferToRadian(degree)) * Math.Cos(FaceRadian);
             Center = new Point(x, y);
             FaceAngle = FaceAngle - TransferToDegree(Math.Asin(2 * Math.Sin(TransferToRadian(degree)) / (2 * Radius)));
+
+            UpdateSensor();
             Render?.Invoke();
+        }
+
+        private void UpdateSensor()
+        {
+            Left = GetDistanceLeft();
+            Forward = GetDistanceForward();
+            Right = GetDistanceRight();
         }
 
         private double TransferToRadian(double degree)
@@ -74,25 +84,25 @@ namespace CarDrive
         {
             Center = new Point(0, 0);
             FaceAngle = 90;
-            Render();
+            Render?.Invoke();
         }
 
-        public double GetDistanceLeft(List<Polyline> obstacles)
+        private double GetDistanceLeft()
         {
-            return GetDistanceFromDegree(obstacles, 45);
+            return GetDistanceFromDegree(45);
         }
 
-        public double GetDistanceForward(List<Polyline> obstacles)
+        private double GetDistanceForward()
         {
-            return GetDistanceFromDegree(obstacles, 0);
+            return GetDistanceFromDegree(0);
         }
 
-        public double GetDistanceRight(List<Polyline> obstacles)
+        private double GetDistanceRight()
         {
-            return GetDistanceFromDegree(obstacles, -45);
+            return GetDistanceFromDegree(-45);
         }
 
-        private double GetDistanceFromDegree(List<Polyline> obstacles, double degree)
+        private double GetDistanceFromDegree(double degree)
         {
             double distance = Double.MaxValue, bonusRadian = degree * Math.PI / 180;
 
@@ -104,7 +114,7 @@ namespace CarDrive
                 Y2 = Center.Y + Math.Sin(FaceRadian + bonusRadian)
             };
 
-            foreach (Polyline polyLine in obstacles)
+            foreach (Polyline polyLine in Obstacles)
             {
                 var points = polyLine.Points;
                 for (int i = 0; i < points.Count - 1; ++i)
