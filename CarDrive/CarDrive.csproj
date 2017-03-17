@@ -65,7 +65,6 @@
     <Compile Include="Car.cs" />
     <Compile Include="Controller\HumanController.cs" />
     <Compile Include="Controller\Controller.cs" />
-    <Compile Include="Exceptions\NoIntersectException.cs" />
     <Compile Include="MapLoader.cs" />
     <Compile Include="Recorder\Record.cs" />
     <Compile Include="Recorder\Recorder.cs" />

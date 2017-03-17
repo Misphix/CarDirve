@@ -1,5 +1,4 @@
-﻿using CarDrive.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Shapes;
@@ -9,6 +8,7 @@ namespace CarDrive
     class Car
     {
         private double _angle;
+        private readonly double _tolerance;
         public delegate void Redraw();
         public event Redraw Render;
         public Point Center { get; set; }
@@ -41,6 +41,7 @@ namespace CarDrive
         {
             FaceAngle = 90;
             Radius = 3;
+            _tolerance = Math.Abs(double.MinValue);
         }
 
         /// <summary>
@@ -119,20 +120,17 @@ namespace CarDrive
                 var points = polyLine.Points;
                 for (int i = 0; i < points.Count - 1; ++i)
                 {
-                    try
+                    Line obstacle = new Line()
                     {
-                        Line obstacle = new Line()
-                        {
-                            X1 = points[i].X,
-                            Y1 = points[i].Y,
-                            X2 = points[i + 1].X,
-                            Y2 = points[i + 1].Y
-                        };
-                        Point intersectionPoint = Intersect(laser, obstacle);
-                        distance = Math.Min(distance, GetTwoPointDistance(Center, intersectionPoint));
-                    }
-                    catch (NoIntersectException)
+                        X1 = points[i].X,
+                        Y1 = points[i].Y,
+                        X2 = points[i + 1].X,
+                        Y2 = points[i + 1].Y
+                    };
+                    Point? intersectionPoint = Intersect(laser, obstacle);
+                    if (intersectionPoint.HasValue)
                     {
+                        distance = Math.Min(distance, GetTwoPointDistance(Center, intersectionPoint.Value));
                     }
                 }
             }
@@ -146,8 +144,8 @@ namespace CarDrive
         /// <param name="laser">Laser's vector.</param>
         /// <param name="obstacle">Obstacle's data.</param>
         /// <returns>Intersection point</returns>
-        /// <exception cref="NoIntersectException">There is no intersection found.</exception>
-        private Point Intersect(Line laser, Line obstacle)
+
+        private Point? Intersect(Line laser, Line obstacle)
         {
             // ax - y = b
             Point intersectPoint = new Point();
@@ -157,9 +155,9 @@ namespace CarDrive
             // delta = A1*B2 - A2*B1
             // 1 is laser, 2 is obstacle
             double delta = laserPara.coefficientX * obstaclePara.coefficientY - obstaclePara.coefficientX * laserPara.coefficientY;
-            if (delta == 0)
+            if (Math.Abs(delta) < _tolerance)
             {
-                throw new NoIntersectException();
+                return null;
             }
 
             // x = (B2*C1 - B1*C2)/delta;
@@ -174,17 +172,17 @@ namespace CarDrive
             double obsMaxY = Math.Max(obstacle.Y1, obstacle.Y2);
             if (intersectPoint.X < obsMinX || intersectPoint.X > obsMaxX || intersectPoint.Y < obsMinY || intersectPoint.Y > obsMaxY)
             {
-                throw new NoIntersectException();
+                return null;
             }
 
             // Check if point in the right way of vector
             if ((intersectPoint.X - laser.X1) * (laser.X2 - laser.X1) < 0)
             {
-                throw new NoIntersectException();
+                return null;
             }
             if ((intersectPoint.Y - laser.Y1) * (laser.Y2 - laser.Y1) < 0)
             {
-                throw new NoIntersectException();
+                return null;
             }
 
             return intersectPoint;
@@ -193,8 +191,8 @@ namespace CarDrive
         private (double coefficientX, double coefficientY, double constant) GenerateLinearEquations(Line line)
         {
             // ax - y = b
-            double cofficientX = (line.X2 - line.X1 == 0) ? 1 : (line.Y2 - line.Y1) / (line.X2 - line.X1);
-            double cofficientY = (line.X2 - line.X1 == 0) ? 0 : -1;
+            double cofficientX = (Math.Abs(line.X2 - line.X1) < _tolerance) ? 1 : (line.Y2 - line.Y1) / (line.X2 - line.X1);
+            double cofficientY = (Math.Abs(line.X2 - line.X1) < _tolerance) ? 0 : -1;
             double constant = cofficientX * line.X1 + cofficientY * line.Y1;
 
             return (cofficientX, cofficientY, constant);
