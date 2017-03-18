@@ -14,13 +14,13 @@ namespace CarDrive.Ui
     partial class Simulator : UserControl
     {
         private Map _map;
-        private readonly Car _car;
         private delegate void Refresh();
         private readonly Refresh _refresh;
         private double StrokeWidth => 2 / Map.CanvasTransform;
         private double CanvasWidth => MapField.ActualWidth;
         private double CanvasHeight => MapField.ActualHeight;
         private double _obstacleWidth, _obstacleHeight;
+
         private readonly Controller.Controller _controller;
 
         private Map Map
@@ -32,9 +32,8 @@ namespace CarDrive.Ui
             set
             {
                 _map = value;
-                _car.Center = Map.StartPoint;
-                _car.Obstacles = Map.Obstacles;
-                _car.Render += Render;
+                _controller.Car.Center = Map.StartPoint;
+                _controller.Car.Obstacles = Map.Obstacles;
                 SetObstacleWidth();
                 SetbstaclesHeight();
             }
@@ -43,11 +42,10 @@ namespace CarDrive.Ui
         public Simulator()
         {
             InitializeComponent();
-            _car = new Car();
             _refresh = ClearMapField;
             _refresh += DrawMap;
             _refresh += DrawCar;
-            _controller = new HumanController(_car);
+            _controller = new HumanController(Render);
         }
 
         private void ClearMapField()
@@ -78,22 +76,22 @@ namespace CarDrive.Ui
         {
             Ellipse ellipse = new Ellipse
             {
-                Height = _car.Radius * 2,
-                Width = _car.Radius * 2,
+                Height = _controller.Car.Radius * 2,
+                Width = _controller.Car.Radius * 2,
                 Stroke = Brushes.SlateGray,
                 StrokeThickness = StrokeWidth
             };
-            Point center = TranslateCoordinate(_car.Center);
-            Canvas.SetLeft(ellipse, center.X - _car.Radius);
-            Canvas.SetTop(ellipse, center.Y - _car.Radius);
+            Point center = TranslateCoordinate(_controller.Car.Center);
+            Canvas.SetLeft(ellipse, center.X - _controller.Car.Radius);
+            Canvas.SetTop(ellipse, center.Y - _controller.Car.Radius);
             MapField.Children.Add(ellipse);
 
             Line direction = new Line
             {
                 X1 = center.X,
                 Y1 = center.Y,
-                X2 = center.X + _car.Radius * Math.Cos(_car.FaceRadian),
-                Y2 = center.Y - _car.Radius * Math.Sin(_car.FaceRadian),
+                X2 = center.X + _controller.Car.Radius * Math.Cos(_controller.Car.FaceRadian),
+                Y2 = center.Y - _controller.Car.Radius * Math.Sin(_controller.Car.FaceRadian),
                 Stroke = Brushes.SlateGray,
                 StrokeThickness = StrokeWidth
             };

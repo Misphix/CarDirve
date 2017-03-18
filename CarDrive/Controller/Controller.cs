@@ -7,16 +7,16 @@ namespace CarDrive.Controller
 {
     abstract class Controller
     {
-        private readonly Car _car;
+        public readonly Car Car;
         private readonly BackgroundWorker _backgroundWorker = new BackgroundWorker();
         protected double Degree;
         private double _speed;
         protected const double Move = 5;
         private const uint Interval = 2000;
 
-        protected Controller(Car car)
+        protected Controller(Car.Redraw redraw)
         {
-            _car = car;
+            Car = new Car(redraw);
         }
 
         public void Start(double speed)
@@ -37,7 +37,7 @@ namespace CarDrive.Controller
         public void Stop()
         {
             _backgroundWorker.CancelAsync();
-            _car.Reset();
+            Car.Reset();
             Degree = 0;
         }
 
@@ -48,12 +48,12 @@ namespace CarDrive.Controller
                 Thread.Sleep((int)(Interval / _speed));
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    _car.Move(Degree);
+                    Car.Move(Degree);
                 });
                 Degree /= 2;
             }
         }
 
-        public virtual void HandlerKeyPress(object sender, KeyEventArgs e) { }
+        public virtual void HandlerKeyPress(object sender, KeyEventArgs e) { }  
     }
 }

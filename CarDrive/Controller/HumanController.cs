@@ -5,9 +5,7 @@ namespace CarDrive.Controller
 {
     class HumanController : Controller
     {
-
-        public HumanController(Car car) : base(car) { }
-        
+        public HumanController(Car.Redraw redraw) : base(redraw) { }
 
         public override void HandlerKeyPress(object sender, KeyEventArgs e)
         {
