@@ -50,7 +50,7 @@ namespace CarDrive.Controller
             {
                 Thread.Sleep((int)(Interval / _speed));
 
-                Record record = new Record(Car.Center, Car.Left, Car.Forward, Car.Right, Car.FaceAngle);
+                Record record = new Record(Car.Center, Car.Left, Car.Forward, Car.Right, Degree);
                 Recorder.Add(record);
                 Car.Move(Degree);
 

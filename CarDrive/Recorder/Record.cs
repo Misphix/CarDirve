@@ -3,31 +3,33 @@ using System.Windows;
 
 namespace CarDrive.Recorder
 {
-    class Record
+    internal class Record
     {
+        private const double Tolerance = double.Epsilon * 20;
         public Point Position;
-        public double LeftDistance { get; }
-        public double ForwardDistance { get; }
-        public double RightDistance { get; }
-        public double Degree { get; }
+        private readonly double _leftDistance, _forwardDistance, _rightDistance, _degree;
 
         internal Record(Point pos, double left, double forward, double right, double degree)
         {
             Position = pos;
-            LeftDistance = left;
-            ForwardDistance = forward;
-            RightDistance = right;
-            Degree = degree;
+            _leftDistance = left;
+            _forwardDistance = forward;
+            _rightDistance = right;
+            _degree = degree;
         }
 
         public override string ToString()
         {
-            return $"{Math.Round(Position.X, 7)} {Math.Round(Position.Y, 7)} {ToString4D()}";
+            return $"{Position.X:F7} {Position.Y:F7} {ToString4D()}";
         }
 
         internal string ToString4D()
         {
-            return $"{Math.Round(ForwardDistance, 7)} {Math.Round(LeftDistance, 7)} {Math.Round(RightDistance, 7)} {Math.Round(Degree, 7)}";
+            string forward = Math.Abs(_forwardDistance - double.MaxValue) < Tolerance ? "MAX" : $"{_forwardDistance:F7}";
+            string left = Math.Abs(_leftDistance - double.MaxValue) < Tolerance ? "MAX" : $"{_leftDistance:F7}";
+            string right = Math.Abs(_rightDistance - double.MaxValue) < Tolerance ? "MAX" : $"{_rightDistance:F7}";
+
+            return $"{forward} {left} {right} {_degree:F7}\r\n";
         }
     }
 }

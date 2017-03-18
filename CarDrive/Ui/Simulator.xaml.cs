@@ -12,7 +12,7 @@ namespace CarDrive.Ui
     /// <summary>
     /// Simulator.xaml 的互動邏輯
     /// </summary>
-    partial class Simulator : UserControl
+    partial class Simulator
     {
         private Map _map;
         private delegate void Refresh();
@@ -46,7 +46,8 @@ namespace CarDrive.Ui
             _refresh = ClearMapField;
             _refresh += DrawMap;
             _refresh += DrawCar;
-            _refresh += DrawRecords;
+            _refresh += DrawPath;
+            _refresh += UpdateConsole;
             _controller = new HumanController(Render);
         }
 
@@ -100,7 +101,7 @@ namespace CarDrive.Ui
             MapField.Children.Add(direction);
         }
 
-        private void DrawRecords()
+        private void DrawPath()
         {
             Polyline line = new Polyline
             {
@@ -115,6 +116,11 @@ namespace CarDrive.Ui
             }
 
             MapField.Children.Add(line);
+        }
+
+        private void UpdateConsole()
+        {
+            DashBoard.Console.Text = _controller.Recorder.ToString();
         }
 
         public void Start(double speed)

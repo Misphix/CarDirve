@@ -59,5 +59,14 @@ namespace CarDrive.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查詢類似 {0} 的當地語系化字串。
+        /// </summary>
+        internal static string Record_ToString4D__0_ {
+            get {
+                return ResourceManager.GetString("Record_ToString4D__0_", resourceCulture);
+            }
+        }
     }
 }

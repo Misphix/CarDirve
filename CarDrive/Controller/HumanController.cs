@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace CarDrive.Controller
 {
-    class HumanController : Controller
+    internal class HumanController : Controller
     {
         public HumanController(Car.Redraw redraw) : base(redraw) { }
 

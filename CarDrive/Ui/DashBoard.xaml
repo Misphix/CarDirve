@@ -24,6 +24,7 @@
                  Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 TextChanged="OnContentChanged"/>
     </Grid>
 </UserControl>

@@ -1,15 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace CarDrive.Ui
 {
     /// <summary>
     /// ControlBar.xaml 的互動邏輯
     /// </summary>
-    public partial class ControlBar : UserControl
+    public partial class ControlBar
     {
         private const string MapDirectory = "../../Maps";
         private Map _selectedMap;

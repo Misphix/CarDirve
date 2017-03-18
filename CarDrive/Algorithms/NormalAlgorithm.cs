@@ -1,6 +1,6 @@
 ﻿namespace CarDrive.Algorithms
 {
-    class NormalAlgorithm : Algorithm
+    internal class NormalAlgorithm : Algorithm
     {
         public string Name { get; }
 

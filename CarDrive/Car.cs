@@ -5,10 +5,11 @@ using System.Windows.Shapes;
 
 namespace CarDrive
 {
-    class Car
+    internal class Car
     {
         private double _angle;
-        private readonly double _tolerance;
+        private const double Tolerance = double.Epsilon * 20;
+
         public delegate void Redraw();
         private event Redraw Render;
         private Point _center;
@@ -25,13 +26,14 @@ namespace CarDrive
 
         public List<Polyline> Obstacles { private get; set; }
         public double Left, Forward, Right;
-        public double FaceAngle
+
+        private double FaceAngle
         {
             get
             {
                 return _angle;
             }
-            private set
+            set
             {
                 if (value > 360)
                 {
@@ -53,7 +55,6 @@ namespace CarDrive
             Render = render;
             FaceAngle = 90;
             Radius = 3;
-            _tolerance = Math.Abs(double.MinValue);
         }
 
         /// <summary>
@@ -85,12 +86,12 @@ namespace CarDrive
             });
         }
 
-        private double TransferToRadian(double degree)
+        private static double TransferToRadian(double degree)
         {
             return degree * Math.PI / 180;
         }
 
-        private double TransferToDegree(double radian)
+        private static double TransferToDegree(double radian)
         {
             return radian * 180 / Math.PI;
         }
@@ -119,7 +120,7 @@ namespace CarDrive
 
         private double GetDistanceFromDegree(double degree)
         {
-            double distance = Double.MaxValue, bonusRadian = degree * Math.PI / 180;
+            double distance = double.MaxValue, bonusRadian = degree * Math.PI / 180;
 
             Line laser = new Line()
             {
@@ -169,7 +170,7 @@ namespace CarDrive
             // delta = A1*B2 - A2*B1
             // 1 is laser, 2 is obstacle
             double delta = laserPara.coefficientX * obstaclePara.coefficientY - obstaclePara.coefficientX * laserPara.coefficientY;
-            if (Math.Abs(delta) < _tolerance)
+            if (Math.Abs(delta) < Tolerance)
             {
                 return null;
             }
@@ -205,8 +206,8 @@ namespace CarDrive
         private (double coefficientX, double coefficientY, double constant) GenerateLinearEquations(Line line)
         {
             // ax - y = b
-            double cofficientX = (Math.Abs(line.X2 - line.X1) < _tolerance) ? 1 : (line.Y2 - line.Y1) / (line.X2 - line.X1);
-            double cofficientY = (Math.Abs(line.X2 - line.X1) < _tolerance) ? 0 : -1;
+            double cofficientX = (Math.Abs(line.X2 - line.X1) < Tolerance) ? 1 : (line.Y2 - line.Y1) / (line.X2 - line.X1);
+            double cofficientY = (Math.Abs(line.X2 - line.X1) < Tolerance) ? 0 : -1;
             double constant = cofficientX * line.X1 + cofficientY * line.Y1;
 
             return (cofficientX, cofficientY, constant);

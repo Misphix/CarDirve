@@ -8,7 +8,7 @@ using System.Windows.Shapes;
 
 namespace CarDrive
 {
-    class MapLoader
+    internal class MapLoader
     {
         public Map LoadMap(string file)
         {

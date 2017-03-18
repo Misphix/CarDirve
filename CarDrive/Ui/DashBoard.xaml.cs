@@ -7,7 +7,7 @@ namespace CarDrive.Ui
     /// <summary>
     /// UserControl1.xaml 的互動邏輯
     /// </summary>
-    public partial class DashBoard : UserControl
+    public partial class DashBoard
     {
         public ObservableCollection<Algorithm> Algorithms { get; private set; }
         public Algorithm SelectedAlgorithm { get; set; }
@@ -16,7 +16,6 @@ namespace CarDrive.Ui
         {
             InitializeList();
             InitializeComponent();
-            Console.Text = "a\r\nb\r\nc\r\nd\r\nb\r\nc\r\nd";
         }
 
         private void InitializeList()
@@ -27,6 +26,11 @@ namespace CarDrive.Ui
             Algorithms.Add(b);
             Algorithms.Add(new NormalAlgorithm("c"));
             SelectedAlgorithm = b;
+        }
+
+        private void OnContentChanged(object sender, TextChangedEventArgs e)
+        {
+            Console.ScrollToEnd();
         }
     }
 }

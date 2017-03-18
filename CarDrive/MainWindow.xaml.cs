@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 
 namespace CarDrive
@@ -7,9 +6,9 @@ namespace CarDrive
     /// <summary>
     /// MainWindow.xaml 的互動邏輯
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        enum Status
+        private enum Status
         {
             Play, Pause, Stop
         }

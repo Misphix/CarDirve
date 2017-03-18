@@ -12,7 +12,7 @@
             <RowDefinition Height="0.7*" />
             <RowDefinition Height="0.3*" />
         </Grid.RowDefinitions>
-        <Canvas x:Name="MapField" SizeChanged="MapField_OnSizeChanged" Grid.Row="0" Background="BlueViolet" />
-        <ui:DashBoard Grid.Row="1" BorderThickness="10" />
+        <Canvas Name="MapField" SizeChanged="MapField_OnSizeChanged" Grid.Row="0" Background="BlueViolet" />
+        <ui:DashBoard x:Name="DashBoard" Grid.Row="1" BorderThickness="10" />
     </Grid>
 </UserControl>
