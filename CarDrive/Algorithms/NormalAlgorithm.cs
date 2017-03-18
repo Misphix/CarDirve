@@ -4,7 +4,7 @@
     {
         public string Name { get; }
 
-        public NormalAlgorithm(string name)
+        internal NormalAlgorithm(string name)
         {
             Name = name;
         }

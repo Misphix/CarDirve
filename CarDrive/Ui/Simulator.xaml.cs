@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using CarDrive.Controller;
+using CarDrive.Recorder;
 
 namespace CarDrive.Ui
 {
@@ -32,8 +33,8 @@ namespace CarDrive.Ui
             set
             {
                 _map = value;
-                _controller.Car.Center = Map.StartPoint;
                 _controller.Car.Obstacles = Map.Obstacles;
+                _controller.Car.Center = Map.StartPoint;
                 SetObstacleWidth();
                 SetbstaclesHeight();
             }
@@ -45,6 +46,7 @@ namespace CarDrive.Ui
             _refresh = ClearMapField;
             _refresh += DrawMap;
             _refresh += DrawCar;
+            _refresh += DrawRecords;
             _controller = new HumanController(Render);
         }
 
@@ -63,7 +65,7 @@ namespace CarDrive.Ui
             {
                 Polyline newLine = new Polyline
                 {
-                    Points = TranslateCoordiantes(line.Points),
+                    Points = TranslateCoordinates(line.Points),
                     Stroke = Brushes.SlateGray,
                     StrokeThickness = StrokeWidth,
                     FillRule = FillRule.EvenOdd
@@ -98,6 +100,23 @@ namespace CarDrive.Ui
             MapField.Children.Add(direction);
         }
 
+        private void DrawRecords()
+        {
+            Polyline line = new Polyline
+            {
+                Stroke = Brushes.Red,
+                StrokeThickness = StrokeWidth,
+                FillRule = FillRule.EvenOdd
+            };
+
+            foreach (Record record in _controller.Recorder.Records)
+            {
+                line.Points.Add(TranslateCoordinate(record.Position));
+            }
+
+            MapField.Children.Add(line);
+        }
+
         public void Start(double speed)
         {
             _controller.Start(speed);
@@ -124,7 +143,7 @@ namespace CarDrive.Ui
             Dispatcher.Invoke(_refresh);
         }
 
-        private PointCollection TranslateCoordiantes(PointCollection pointCollection)
+        private PointCollection TranslateCoordinates(PointCollection pointCollection)
         {
             PointCollection result = new PointCollection();
 

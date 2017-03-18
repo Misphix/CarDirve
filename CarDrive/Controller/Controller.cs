@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Threading;
-using System.Windows;
 using System.Windows.Input;
+using CarDrive.Recorder;
 
 namespace CarDrive.Controller
 {
     abstract class Controller
     {
         public readonly Car Car;
+        public readonly Recorder.Recorder Recorder;
         private readonly BackgroundWorker _backgroundWorker = new BackgroundWorker();
         protected double Degree;
         private double _speed;
@@ -17,6 +18,7 @@ namespace CarDrive.Controller
         protected Controller(Car.Redraw redraw)
         {
             Car = new Car(redraw);
+            Recorder = new Recorder.Recorder();
         }
 
         public void Start(double speed)
@@ -37,8 +39,9 @@ namespace CarDrive.Controller
         public void Stop()
         {
             _backgroundWorker.CancelAsync();
-            Car.Reset();
             Degree = 0;
+            Recorder.Clear();
+            Car.Reset();
         }
 
         private void MoveCar(object sender, DoWorkEventArgs e)
@@ -46,10 +49,11 @@ namespace CarDrive.Controller
             while (!_backgroundWorker.CancellationPending)
             {
                 Thread.Sleep((int)(Interval / _speed));
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Car.Move(Degree);
-                });
+
+                Record record = new Record(Car.Center, Car.Left, Car.Forward, Car.Right, Car.FaceAngle);
+                Recorder.Add(record);
+                Car.Move(Degree);
+
                 Degree /= 2;
             }
         }

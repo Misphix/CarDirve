@@ -1,19 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CarDrive.Recorder
 {
     class Recorder
     {
-        private readonly List<Record> _records = new List<Record>();
+        internal readonly List<Record> Records = new List<Record>();
 
-        public void Add(Record record)
+        internal void Add(Record record)
         {
-            _records.Add(record);
+            Records.Add(record);
         }
 
-        public void Clear()
+        internal void Clear()
         {
-            _records.Clear();
+            Records.Clear();
+        }
+
+        public override string ToString()
+        {
+            string result = String.Empty;
+
+            foreach (Record record in Records)
+            {
+                result += record.ToString();
+            }
+
+            return result;
+        }
+
+        public string ToString4D()
+        {
+            string result = String.Empty;
+
+            foreach (Record record in Records)
+            {
+                result += record.ToString4D();
+            }
+
+            return result;
         }
     }
 }

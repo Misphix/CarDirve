@@ -10,8 +10,19 @@ namespace CarDrive
         private double _angle;
         private readonly double _tolerance;
         public delegate void Redraw();
-        private event Redraw _render;
-        public Point Center { get; set; }
+        private event Redraw Render;
+        private Point _center;
+
+        public Point Center
+        {
+            get { return _center; }
+            set
+            {
+                _center = value;
+                UpdateSensor();
+            }
+        }
+
         public List<Polyline> Obstacles { private get; set; }
         public double Left, Forward, Right;
         public double FaceAngle
@@ -39,7 +50,7 @@ namespace CarDrive
 
         public Car(Redraw render)
         {
-            _render = render;
+            Render = render;
             FaceAngle = 90;
             Radius = 3;
             _tolerance = Math.Abs(double.MinValue);
@@ -61,15 +72,17 @@ namespace CarDrive
             Center = new Point(x, y);
             FaceAngle = FaceAngle - TransferToDegree(Math.Asin(2 * Math.Sin(TransferToRadian(degree)) / (2 * Radius)));
 
-            UpdateSensor();
-            _render?.Invoke();
+            Render?.Invoke();
         }
 
         private void UpdateSensor()
         {
-            Left = GetDistanceLeft();
-            Forward = GetDistanceForward();
-            Right = GetDistanceRight();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Left = GetDistanceLeft();
+                Forward = GetDistanceForward();
+                Right = GetDistanceRight();
+            });
         }
 
         private double TransferToRadian(double degree)
@@ -86,7 +99,7 @@ namespace CarDrive
         {
             Center = new Point(0, 0);
             FaceAngle = 90;
-            _render?.Invoke();
+            Render?.Invoke();
         }
 
         private double GetDistanceLeft()
