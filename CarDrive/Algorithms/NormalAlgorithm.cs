@@ -1,15 +1,25 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace CarDrive.Algorithms
 {
     internal class NormalAlgorithm : Algorithm
     {
         public string Name { get; }
+        // Forward
         private const double ForwardFar0 = 12, ForwardFar1 = 14;
-        private const double ForwardMedLow0 = 5, ForwardMedHigh0 = 7.5, ForwardMedHigh1 = 7.5, ForwardMedLow1 = 14;
+        private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 7.5, ForwardMediumHigh1 = 7.5, ForwardMediumLow1 = 14;
         private const double ForwardClose0 = 7, ForwardClose1 = 5;
-        private double _farForwardAlpha, _medForwardAlpha, _closeForwardAlpha;
+        // Difference
+        private const double DifferenceLarge0 = 2, DifferenceLarge1 = 8;
+        private const double DifferenceMediumLow0 = -8, DifferenceMediumHigh0 = -2, DifferenceMediumHigh1 = -2, DifferenceMediumLow1 = 4;
+        private const double DifferenceSmall0 = -6, DifferenceSmall1 = -12;
+        // Steering wheel
+        private const double DegreeLarge0 = 20, DegreeLarge1 = 30;
+        private const double DegreeMediumLow0 = -15, DegreeMediumHigh0 = 0, DegreeMediumHigh1 = 0, DegreeMediumLow1 = 15;
+        private const double DegreeSmall0 = -20, DegreeSmall1 = -30;
+
+        private double _farForwardAlpha, _mediumForwardAlpha, _closeForwardAlpha;
+        private double _largeDifferenceAlpha, _mediumDifferenceAlpha, _smallDifferenceAlpha;
 
         internal NormalAlgorithm()
         {
@@ -18,15 +28,15 @@ namespace CarDrive.Algorithms
 
         public double GetDegree(double forward, double difference)
         {
-            // left - right far: >9, med: 9~-9, small: <-9 
             CalculateForward(forward);
+            CalculateDifference(difference);
             return 0;
         }
 
         private void CalculateForward(double forward)
         {
             CalculateForwardFar(forward);
-            CalculateForwardMed(forward);
+            CalculateForwardMedium(forward);
             CalculateForwardClose(forward);
         }
 
@@ -48,27 +58,27 @@ namespace CarDrive.Algorithms
             }
         }
 
-        private void CalculateForwardMed(double forward)
+        private void CalculateForwardMedium(double forward)
         {
-            Debug.Assert(ForwardMedLow0 <= ForwardMedHigh0);
-            Debug.Assert(ForwardMedHigh0 <= ForwardMedHigh1);
-            Debug.Assert(ForwardMedHigh1 <= ForwardMedLow1);
+            Debug.Assert(ForwardMediumLow0 <= ForwardMediumHigh0);
+            Debug.Assert(ForwardMediumHigh0 <= ForwardMediumHigh1);
+            Debug.Assert(ForwardMediumHigh1 <= ForwardMediumLow1);
 
-            if (forward >= ForwardMedHigh0 && forward <= ForwardMedHigh1)
+            if (forward >= ForwardMediumHigh0 && forward <= ForwardMediumHigh1)
             {
-                _medForwardAlpha = 1;
+                _mediumForwardAlpha = 1;
             }
-            else if (forward <= ForwardMedLow0 || forward >= ForwardMedLow1)
+            else if (forward <= ForwardMediumLow0 || forward >= ForwardMediumLow1)
             {
-                _medForwardAlpha = 0;
+                _mediumForwardAlpha = 0;
             }
-            else if (forward > ForwardMedLow0 && forward < ForwardMedHigh0)
+            else if (forward > ForwardMediumLow0 && forward < ForwardMediumHigh0)
             {
-                _medForwardAlpha = (forward - ForwardMedLow0) / (ForwardMedHigh0 - ForwardMedLow0);
+                _mediumForwardAlpha = (forward - ForwardMediumLow0) / (ForwardMediumHigh0 - ForwardMediumLow0);
             }
-            else if (forward < ForwardMedLow1 && forward > ForwardMedHigh1)
+            else if (forward < ForwardMediumLow1 && forward > ForwardMediumHigh1)
             {
-                _medForwardAlpha = (forward - ForwardMedLow1) / (ForwardMedHigh1 - ForwardMedLow1);
+                _mediumForwardAlpha = (forward - ForwardMediumLow1) / (ForwardMediumHigh1 - ForwardMediumLow1);
             }
         }
 
@@ -88,6 +98,106 @@ namespace CarDrive.Algorithms
             {
                 _closeForwardAlpha = (forward - ForwardClose0) / (ForwardClose1 - ForwardClose0);
             }
+        }
+
+        private void CalculateDifference(double difference)
+        {
+            CalculateDifferenceLarge(difference);
+            CalculateDifferenceMedium(difference);
+            CalculateDifferenceSmall(difference);
+        }
+
+        private void CalculateDifferenceLarge(double difference)
+        {
+            Debug.Assert(ForwardFar0 <= DifferenceLarge1);
+
+            if (difference >= DifferenceLarge1)
+            {
+                _largeDifferenceAlpha = 1;
+            }
+            else if (difference <= DifferenceLarge0)
+            {
+                _largeDifferenceAlpha = 0;
+            }
+            else
+            {
+                _largeDifferenceAlpha = (difference - DifferenceLarge0) / (ForwardFar1 - DifferenceLarge0);
+            }
+        }
+
+        private void CalculateDifferenceMedium(double difference)
+        {
+            Debug.Assert(DifferenceMediumLow0 <= DifferenceMediumHigh0);
+            Debug.Assert(DifferenceMediumHigh0 <= DifferenceMediumHigh1);
+            Debug.Assert(DifferenceMediumHigh1 <= DifferenceMediumLow1);
+
+            if (difference >= DifferenceMediumHigh0 && difference <= DifferenceMediumHigh1)
+            {
+                _mediumDifferenceAlpha = 1;
+            }
+            else if (difference <= DifferenceMediumLow0 || difference >= DifferenceMediumLow1)
+            {
+                _mediumDifferenceAlpha = 0;
+            }
+            else if (difference > DifferenceMediumLow0 && difference < DifferenceMediumHigh0)
+            {
+                _mediumDifferenceAlpha = (difference - DifferenceMediumLow0) / (DifferenceMediumHigh0 - DifferenceMediumLow0);
+            }
+            else if (difference < DifferenceMediumLow1 && difference > DifferenceMediumHigh1)
+            {
+                _mediumDifferenceAlpha = (difference - DifferenceMediumLow1) / (DifferenceMediumHigh1 - DifferenceMediumLow1);
+            }
+        }
+
+        private void CalculateDifferenceSmall(double difference)
+        {
+            Debug.Assert(DifferenceSmall1 <= DifferenceSmall0);
+
+            if (difference <= DifferenceSmall1)
+            {
+                _smallDifferenceAlpha = 1;
+            }
+            else if (difference >= DifferenceSmall0)
+            {
+                _smallDifferenceAlpha = 0;
+            }
+            else
+            {
+                _smallDifferenceAlpha = (difference - DifferenceSmall0) / (DifferenceSmall1 - DifferenceSmall0);
+            }
+        }
+
+        private double TurnRight(double alpha)
+        {
+            Debug.Assert(DegreeLarge0 <= DegreeLarge1);
+
+            double left = DegreeLarge0 + (DegreeLarge1 - DegreeLarge0) / alpha;
+            double result = (left + 40) / 2;
+
+            return result;
+        }
+
+        private double KeepWheel(double alpha)
+        {
+            Debug.Assert(DegreeMediumLow0 <= DegreeMediumHigh0);
+            Debug.Assert(DegreeMediumHigh0 <= DegreeMediumHigh1);
+            Debug.Assert(DegreeMediumHigh1 <= DegreeMediumLow1);
+
+            double left = DegreeMediumLow0 + (DegreeMediumHigh0 - DegreeMediumLow0) / alpha;
+            double right = DegreeMediumLow1 - (DegreeMediumLow1 - DegreeMediumHigh1) / alpha;
+            double result = (left + right) / 2;
+
+            return result;
+        }
+
+        private double TurnLeft(double alpha)
+        {
+            Debug.Assert(DegreeSmall1 <= DegreeSmall0);
+
+            double right = DegreeSmall0 - (DegreeSmall0 - DegreeSmall1) / alpha;
+            double result = (right - 40) / 2;
+
+            return result;
         }
     }
 }

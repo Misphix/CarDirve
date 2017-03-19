@@ -21,7 +21,7 @@ namespace CarDrive.Controller
 
                     Record record = new Record(Car.Center, Car.Left, Car.Forward, Car.Right, Degree);
                     Recorder.Add(record);
-                    Degree = SelectedAlgorithm.GetDegree(Car.Forward, Car.Left - Car.Right);
+                    Degree = SelectedAlgorithm.GetDegree(Car.Forward, Car.Right - Car.Left);
                     Car.Move(Degree);
                 }
             }
