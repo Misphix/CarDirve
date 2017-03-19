@@ -6,7 +6,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using CarDrive.Controller;
 using CarDrive.Recorder;
-using System.Windows.Input;
 
 namespace CarDrive.Ui
 {

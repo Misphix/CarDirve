@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace CarDrive.Algorithms
 {
@@ -8,15 +9,15 @@ namespace CarDrive.Algorithms
         // Forward
         private const double ForwardFar0 = 12, ForwardFar1 = 14;
         private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 7.5, ForwardMediumHigh1 = 7.5, ForwardMediumLow1 = 14;
-        private const double ForwardClose0 = 7, ForwardClose1 = 5;
+        private const double ForwardClose0 = 14, ForwardClose1 = 12;
         // Difference
-        private const double DifferenceLarge0 = 2, DifferenceLarge1 = 8;
-        private const double DifferenceMediumLow0 = -8, DifferenceMediumHigh0 = -2, DifferenceMediumHigh1 = -2, DifferenceMediumLow1 = 4;
-        private const double DifferenceSmall0 = -6, DifferenceSmall1 = -12;
+        private const double DifferenceLarge0 = 8, DifferenceLarge1 = 12;
+        private const double DifferenceMediumLow0 = -8, DifferenceMediumHigh0 = -4, DifferenceMediumHigh1 = 4, DifferenceMediumLow1 = 8;
+        private const double DifferenceSmall0 = -8, DifferenceSmall1 = -12;
         // Steering wheel
-        private const double DegreeLarge0 = 20, DegreeLarge1 = 30;
-        private const double DegreeMediumLow0 = -15, DegreeMediumHigh0 = 0, DegreeMediumHigh1 = 0, DegreeMediumLow1 = 15;
-        private const double DegreeSmall0 = -20, DegreeSmall1 = -30;
+        private const double DegreeLarge0 = 30, DegreeLarge1 = 35;
+        private const double DegreeMediumLow0 = -20, DegreeMediumHigh0 = -15, DegreeMediumHigh1 = 15, DegreeMediumLow1 = 20;
+        private const double DegreeSmall0 = 30, DegreeSmall1 = -35;
 
         private double _farForwardAlpha, _mediumForwardAlpha, _closeForwardAlpha;
         private double _largeDifferenceAlpha, _mediumDifferenceAlpha, _smallDifferenceAlpha;
@@ -28,9 +29,26 @@ namespace CarDrive.Algorithms
 
         public double GetDegree(double forward, double difference)
         {
+            
             CalculateForward(forward);
             CalculateDifference(difference);
-            return 0;
+
+            // Forword small and difference is large
+            double rAlpha = Math.Min(_closeForwardAlpha, _largeDifferenceAlpha);
+            double rDegree = TurnRight(rAlpha);
+
+            // Forword small and difference is medium
+            double mAlpha = Math.Min(_closeForwardAlpha, _mediumDifferenceAlpha);
+            double mDegree = KeepWheel(mAlpha);
+
+            // Forword small and difference is small
+            double lAlpha = Math.Min(_closeForwardAlpha, _smallDifferenceAlpha);
+            double lDegree = TurnLeft(lAlpha);
+
+            double result = (rAlpha * rDegree + mAlpha * mDegree + lAlpha * lDegree) / (rAlpha + mAlpha + lAlpha);
+            result = double.IsNaN(result) ? 0 : result;
+
+            return result;
         }
 
         private void CalculateForward(double forward)
@@ -109,7 +127,7 @@ namespace CarDrive.Algorithms
 
         private void CalculateDifferenceLarge(double difference)
         {
-            Debug.Assert(ForwardFar0 <= DifferenceLarge1);
+            Debug.Assert(DifferenceLarge0 <= DifferenceLarge1);
 
             if (difference >= DifferenceLarge1)
             {
@@ -171,7 +189,7 @@ namespace CarDrive.Algorithms
         {
             Debug.Assert(DegreeLarge0 <= DegreeLarge1);
 
-            double left = DegreeLarge0 + (DegreeLarge1 - DegreeLarge0) / alpha;
+            double left = DegreeLarge0 + (DegreeLarge1 - DegreeLarge0) * alpha;
             double result = (left + 40) / 2;
 
             return result;
@@ -183,8 +201,8 @@ namespace CarDrive.Algorithms
             Debug.Assert(DegreeMediumHigh0 <= DegreeMediumHigh1);
             Debug.Assert(DegreeMediumHigh1 <= DegreeMediumLow1);
 
-            double left = DegreeMediumLow0 + (DegreeMediumHigh0 - DegreeMediumLow0) / alpha;
-            double right = DegreeMediumLow1 - (DegreeMediumLow1 - DegreeMediumHigh1) / alpha;
+            double left = DegreeMediumLow0 + (DegreeMediumHigh0 - DegreeMediumLow0) * alpha;
+            double right = DegreeMediumLow1 - (DegreeMediumLow1 - DegreeMediumHigh1) * alpha;
             double result = (left + right) / 2;
 
             return result;
@@ -194,7 +212,7 @@ namespace CarDrive.Algorithms
         {
             Debug.Assert(DegreeSmall1 <= DegreeSmall0);
 
-            double right = DegreeSmall0 - (DegreeSmall0 - DegreeSmall1) / alpha;
+            double right = DegreeSmall0 - (DegreeSmall0 - DegreeSmall1) * alpha;
             double result = (right - 40) / 2;
 
             return result;
