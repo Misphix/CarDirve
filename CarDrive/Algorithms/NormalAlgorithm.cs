@@ -1,12 +1,19 @@
-﻿namespace CarDrive.Algorithms
+﻿using System;
+
+namespace CarDrive.Algorithms
 {
     internal class NormalAlgorithm : Algorithm
     {
         public string Name { get; }
 
-        internal NormalAlgorithm(string name)
+        internal NormalAlgorithm()
         {
-            Name = name;
+            Name = "Normal Algorithm";
+        }
+
+        public double GetDegree(double forward, double difference)
+        {
+            return 0;
         }
     }
 }

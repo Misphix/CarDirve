@@ -63,6 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="Algorithms\NormalAlgorithm.cs" />
     <Compile Include="Car.cs" />
+    <Compile Include="Controller\AlgorithController.cs" />
     <Compile Include="Controller\HumanController.cs" />
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="MapLoader.cs" />

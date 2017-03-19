@@ -10,22 +10,34 @@ namespace CarDrive.Ui
     public partial class DashBoard
     {
         public ObservableCollection<Algorithm> Algorithms { get; private set; }
-        public Algorithm SelectedAlgorithm { get; set; }
+        internal Controller.Controller Controller
+        {
+            private get { return _controller; }
+            set
+            {
+                _controller = value;
+                foreach (Algorithm algorithm in value.Algorithms)
+                {
+                    Algorithms.Add(algorithm);
+                }
+            }
+        }
+        public Algorithm SelectedAlgorithm
+        {
+            get { return _selectedAlgorithm; }
+            set
+            {
+                _selectedAlgorithm = value;
+                Controller.SelectedAlgorithm = value;
+            }
+        }
+        private Controller.Controller _controller;
+        private Algorithm _selectedAlgorithm;
 
         public DashBoard()
         {
-            InitializeList();
-            InitializeComponent();
-        }
-
-        private void InitializeList()
-        {
             Algorithms = new ObservableCollection<Algorithm>();
-            Algorithms.Add(new NormalAlgorithm("a"));
-            var b = new NormalAlgorithm("b");
-            Algorithms.Add(b);
-            Algorithms.Add(new NormalAlgorithm("c"));
-            SelectedAlgorithm = b;
+            InitializeComponent();
         }
 
         private void OnContentChanged(object sender, TextChangedEventArgs e)

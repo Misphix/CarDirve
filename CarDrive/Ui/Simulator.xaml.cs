@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using CarDrive.Controller;
 using CarDrive.Recorder;
+using System.Windows.Input;
 
 namespace CarDrive.Ui
 {
@@ -16,7 +17,7 @@ namespace CarDrive.Ui
     {
         private Map _map;
         private delegate void Refresh();
-        private readonly Refresh _refresh;
+        private Refresh _refresh;
         private double StrokeWidth => 2 / Map.CanvasTransform;
         private double CanvasWidth => MapField.ActualWidth;
         private double CanvasHeight => MapField.ActualHeight;
@@ -43,12 +44,18 @@ namespace CarDrive.Ui
         public Simulator()
         {
             InitializeComponent();
+            InitializeRefreshGuiProcess();
+            _controller = new AlgorithController(Render);
+            DashBoard.Controller = _controller;
+        }
+
+        private void InitializeRefreshGuiProcess()
+        {
             _refresh = ClearMapField;
             _refresh += DrawMap;
             _refresh += DrawCar;
             _refresh += DrawPath;
             _refresh += UpdateConsole;
-            _controller = new HumanController(Render);
         }
 
         private void ClearMapField()
@@ -124,7 +131,7 @@ namespace CarDrive.Ui
         }
 
         public void Start(double speed)
-        {
+        {         
             _controller.Start(speed);
         }
 

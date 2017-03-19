@@ -16,7 +16,7 @@
             <RowDefinition Height="0.7*" />
         </Grid.RowDefinitions>
         <TextBlock Text="Algorithm" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
-        <ComboBox ItemsSource="{Binding Algorithms}" SelectedItem="{Binding SelectedAlgorithm}" DisplayMemberPath="Name"
+        <ComboBox ItemsSource="{Binding Algorithms, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedAlgorithm, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name"
                   Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="5" />
 
         <TextBox x:Name="Console" IsReadOnly="True"

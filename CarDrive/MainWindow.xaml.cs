@@ -8,11 +8,11 @@ namespace CarDrive
     /// </summary>
     public partial class MainWindow
     {
-        private enum Status
+        internal enum Status
         {
             Play, Pause, Stop
         }
-        private Status _status = Status.Stop;
+        static internal Status _status = Status.Stop;
 
         public MainWindow()
         {
