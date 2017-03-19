@@ -8,16 +8,16 @@ namespace CarDrive.Algorithms
         public string Name { get; }
         // Forward
         private const double ForwardFar0 = 12, ForwardFar1 = 14;
-        private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 7.5, ForwardMediumHigh1 = 7.5, ForwardMediumLow1 = 14;
-        private const double ForwardClose0 = 14, ForwardClose1 = 12;
+        private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 8, ForwardMediumHigh1 = 8.7, ForwardMediumLow1 = 12;
+        private const double ForwardClose0 = 6, ForwardClose1 = 4;
         // Difference
-        private const double DifferenceLarge0 = 8, DifferenceLarge1 = 12;
-        private const double DifferenceMediumLow0 = -8, DifferenceMediumHigh0 = -4, DifferenceMediumHigh1 = 4, DifferenceMediumLow1 = 8;
-        private const double DifferenceSmall0 = -8, DifferenceSmall1 = -12;
+        private const double DifferenceLarge0 = 2, DifferenceLarge1 = 6;
+        private const double DifferenceMediumLow0 = -7, DifferenceMediumHigh0 = -6, DifferenceMediumHigh1 = 2, DifferenceMediumLow1 = 6;
+        private const double DifferenceSmall0 = -2, DifferenceSmall1 = -6;
         // Steering wheel
         private const double DegreeLarge0 = 30, DegreeLarge1 = 35;
-        private const double DegreeMediumLow0 = -20, DegreeMediumHigh0 = -15, DegreeMediumHigh1 = 15, DegreeMediumLow1 = 20;
-        private const double DegreeSmall0 = 30, DegreeSmall1 = -35;
+        private const double DegreeMediumLow0 = -25, DegreeMediumHigh0 = -20, DegreeMediumHigh1 = 20, DegreeMediumLow1 = 25;
+        private const double DegreeSmall0 = -30, DegreeSmall1 = -35;
 
         private double _farForwardAlpha, _mediumForwardAlpha, _closeForwardAlpha;
         private double _largeDifferenceAlpha, _mediumDifferenceAlpha, _smallDifferenceAlpha;
@@ -29,23 +29,48 @@ namespace CarDrive.Algorithms
 
         public double GetDegree(double forward, double difference)
         {
-            
+
             CalculateForward(forward);
             CalculateDifference(difference);
 
             // Forword small and difference is large
-            double rAlpha = Math.Min(_closeForwardAlpha, _largeDifferenceAlpha);
-            double rDegree = TurnRight(rAlpha);
+            double numerator = 0, denominator = 0;
+            double alpha = Math.Min(_closeForwardAlpha, _largeDifferenceAlpha);
+            double degree = TurnRight(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
 
             // Forword small and difference is medium
-            double mAlpha = Math.Min(_closeForwardAlpha, _mediumDifferenceAlpha);
-            double mDegree = KeepWheel(mAlpha);
+            alpha = Math.Min(_closeForwardAlpha, _mediumDifferenceAlpha);
+            degree = KeepWheel(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
 
             // Forword small and difference is small
-            double lAlpha = Math.Min(_closeForwardAlpha, _smallDifferenceAlpha);
-            double lDegree = TurnLeft(lAlpha);
+            alpha = Math.Min(_closeForwardAlpha, _smallDifferenceAlpha);
+            degree = TurnLeft(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
 
-            double result = (rAlpha * rDegree + mAlpha * mDegree + lAlpha * lDegree) / (rAlpha + mAlpha + lAlpha);
+            // Forword medium and difference is large
+            alpha = Math.Min(_mediumForwardAlpha, _largeDifferenceAlpha);
+            degree = TurnRight(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
+
+            // Forword medium and difference is medium
+            alpha = Math.Min(_mediumForwardAlpha, _mediumDifferenceAlpha);
+            degree = KeepWheel(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
+
+            // Forword medium and difference is small
+            alpha = Math.Min(_mediumForwardAlpha, _smallDifferenceAlpha);
+            degree = TurnLeft(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
+
+            double result = numerator / denominator;
             result = double.IsNaN(result) ? 0 : result;
 
             return result;
