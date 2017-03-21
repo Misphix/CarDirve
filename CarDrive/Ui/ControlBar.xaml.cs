@@ -9,7 +9,7 @@ namespace CarDrive.Ui
     /// </summary>
     public partial class ControlBar
     {
-        private const string MapDirectory = "../../Maps";
+        private const string MapDirectory = "Maps";
         private Map _selectedMap;
         public delegate void MapChanged(Map map);
         public event MapChanged MapChangeNotify;
