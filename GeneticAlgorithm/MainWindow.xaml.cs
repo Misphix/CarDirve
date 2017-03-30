@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using GeneticAlgorithm.Info;
+using System.Windows;
 
 namespace GeneticAlgorithm
 {
@@ -7,9 +8,13 @@ namespace GeneticAlgorithm
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string path = "../../Data";
+        private DataReader _dataReader;
+
         public MainWindow()
         {
             InitializeComponent();
+            _dataReader = new DataReader(path);
         }
     }
 }

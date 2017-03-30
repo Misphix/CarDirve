@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeneticAlgorithm"
         mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="RBFN" Height="350" Width="525">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -12,11 +13,12 @@
             <ColumnDefinition Width="0.7*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.2*" />
-            <RowDefinition Height="0.2*" />
-            <RowDefinition Height="0.2*" />
-            <RowDefinition Height="0.2*" />
-            <RowDefinition Height="0.2*" />
+            <RowDefinition Height="0.15*" />
+            <RowDefinition Height="0.15*" />
+            <RowDefinition Height="0.15*" />
+            <RowDefinition Height="0.15*" />
+            <RowDefinition Height="0.15*" />
+            <RowDefinition Height="0.25*" />
         </Grid.RowDefinitions>
         <TextBlock Text="Population" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" />
         <TextBox VerticalAlignment="Center" HorizontalAlignment="Left" Width="40" Grid.Column="1" Grid.Row="0" />
@@ -32,5 +34,13 @@
 
         <TextBlock Text="Accept" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="4" />
         <TextBox VerticalAlignment="Center" HorizontalAlignment="Left" Width="40" Grid.Column="1" Grid.Row="4" />
+
+        <TextBox x:Name="Console" IsReadOnly="True"
+                 Background="Black" Foreground="GhostWhite"
+                 Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
+                 VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 TextChanged="OnContentChanged"/>
     </Grid>
 </Window>
