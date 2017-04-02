@@ -50,12 +50,14 @@ namespace GeneticAlgorithm
             int maxIteration = int.Parse(MaxIteration.Text);
             double mutation = double.Parse(Mutation.Text);
             double crossover = double.Parse(Crossover.Text);
+            int neural = int.Parse(Neural.Text);
 
             Genetic genetic = new Genetic(population, maxIteration, tolerance, mutation, crossover)
             {
                 Train4D = _dataReader.Data4D,
                 Train6D = _dataReader.Data6D
             };
+            Console.Text = genetic.Start(neural).ToString();
             _canExecuted = true;
         }
 

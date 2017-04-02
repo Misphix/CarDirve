@@ -39,7 +39,7 @@
         <TextBox Name="MaxIteration" Text="200" TextChanged="CheckTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100" Grid.Column="1" Grid.Row="3" />
 
         <TextBlock Text="Accept" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="4" />
-        <TextBox Name="Accept" Text="75" TextChanged="CheckTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100" Grid.Column="1" Grid.Row="4" />
+        <TextBox Name="Accept" Text="5" TextChanged="CheckTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100" Grid.Column="1" Grid.Row="4" />
 
         <TextBlock Text="Neural number" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="5" />
         <TextBox Name="Neural" Text="4" TextChanged="CheckTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100" Grid.Column="1" Grid.Row="5" />

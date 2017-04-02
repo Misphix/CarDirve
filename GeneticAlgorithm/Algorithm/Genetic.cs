@@ -6,8 +6,8 @@ namespace GeneticAlgorithm.Algorithm
 {
     class Genetic
     {
-        private readonly int _population, _maxIteration, _tolerance;
-        private readonly double _mutationRate, _crossoverRate;
+        private readonly int _population, _maxIteration;
+        private readonly double _mutationRate, _crossoverRate, _tolerance;
         private List<Individual> _individuals = new List<Individual>();
         private int _neuralSize;
 
@@ -18,7 +18,7 @@ namespace GeneticAlgorithm.Algorithm
         {
             _population = population;
             _maxIteration = maxIteration;
-            _tolerance = tolerance;
+            _tolerance = tolerance / 80;
             _mutationRate = mutation;
             _crossoverRate = crossover;
         }
@@ -29,18 +29,21 @@ namespace GeneticAlgorithm.Algorithm
 
             for (int i = 0; i < _population; i++)
             {
-                _individuals.Add(new Individual(neuralSize, DataType.WithoutPosition));
+                _individuals.Add(new Individual(neuralSize, DataType.WithoutPosition, FitnessFunction));
             }
 
             for (int i = 0; i < _maxIteration; i++)
             {
                 foreach (Individual individual in _individuals)
                 {
-                    if (FitnessFunction(individual, DataType.WithoutPosition) < _tolerance)
+                    if (individual.MaxErrorDegree < _tolerance)
                     {
                         return individual;
                     }
                 }
+
+                _individuals.Sort();
+                List<Individual> pool = new List<Individual>();
             }
 
             return null;
@@ -53,7 +56,9 @@ namespace GeneticAlgorithm.Algorithm
 
             for (int i = 0; i < dataList.Count; i++)
             {
-                result += dataList[i].DegreeNormalize - TargetFunction(dataList[i], individual, type);
+                double nomoralizeErrorDegree = dataList[i].DegreeNormalize - TargetFunction(dataList[i], individual, type);
+                result += Math.Pow(nomoralizeErrorDegree, 2);
+                individual.MaxErrorDegree = Math.Abs(nomoralizeErrorDegree) > individual.MaxErrorDegree ? Math.Abs(nomoralizeErrorDegree) * 80 : individual.MaxErrorDegree * 80;
             }
 
             return result / 2;
@@ -67,7 +72,7 @@ namespace GeneticAlgorithm.Algorithm
                 result += individual.Param[i].W * Phi(data, individual, type, i);
             }
 
-            return result;
+            return result + individual.Theta;
         }
 
         private double Phi(Data data, Individual individual , DataType type, int neuralNumber)
