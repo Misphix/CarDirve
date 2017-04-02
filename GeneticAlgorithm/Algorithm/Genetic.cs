@@ -1,7 +1,6 @@
 ﻿using GeneticAlgorithm.Info;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GeneticAlgorithm.Algorithm
 {
@@ -9,7 +8,8 @@ namespace GeneticAlgorithm.Algorithm
     {
         private readonly int _population, _maxIteration, _tolerance;
         private readonly double _mutationRate, _crossoverRate;
-        private readonly List<Paramater> _param = new List<Paramater>();
+        private List<Individual> _individuals = new List<Individual>();
+        private int _neuralSize;
 
         public List<Data> Train4D { private get; set; }
         public List<Data> Train6D { private get; set; }
@@ -23,43 +23,82 @@ namespace GeneticAlgorithm.Algorithm
             _crossoverRate = crossover;
         }
 
-        public void Start(int neuralSize)
+        public Individual Start(int neuralSize)
         {
-            for (int i = 0; i < neuralSize; i++)
+            _neuralSize = neuralSize;
+
+            for (int i = 0; i < _population; i++)
             {
-                _param.Add(new Paramater(4));
+                _individuals.Add(new Individual(neuralSize, DataType.WithoutPosition));
             }
+
+            for (int i = 0; i < _maxIteration; i++)
+            {
+                foreach (Individual individual in _individuals)
+                {
+                    if (FitnessFunction(individual, DataType.WithoutPosition) < _tolerance)
+                    {
+                        return individual;
+                    }
+                }
+            }
+
+            return null;
         }
 
-        private double Phi(Data data, int dataSize, int neuralNumber)
+        private double FitnessFunction(Individual individual, DataType type)
         {
-            Debug.Assert(dataSize == 3 || dataSize == 5);
+            List<Data> dataList = type == DataType.WithoutPosition ? Train4D : Train6D;
+            double result = 0;
 
-            double vectorDistancePower2 = 0;
-            if (dataSize == 3)
+            for (int i = 0; i < dataList.Count; i++)
             {
-                double[] vector =
-                {
-                    (data.ForwardDistance - _param[neuralNumber].M[0]),
-                    (data.LeftDistance - _param[neuralNumber].M[0]),
-                    (data.RightDistance - _param[neuralNumber].M[0])
-                };
-                vectorDistancePower2 = CalculateDistancePower2(vector);
-            }
-            else
-            {
-                double[] vector =
-                {
-                    (data.X - _param[neuralNumber].M[0]),
-                    (data.Y - _param[neuralNumber].M[0]),
-                    (data.ForwardDistance - _param[neuralNumber].M[0]),
-                    (data.LeftDistance - _param[neuralNumber].M[0]),
-                    (data.RightDistance - _param[neuralNumber].M[0])
-                };
-                vectorDistancePower2 = CalculateDistancePower2(vector);
+                result += dataList[i].DegreeNormalize - TargetFunction(dataList[i], individual, type);
             }
 
-            double result = Math.Exp(-1 * vectorDistancePower2 / (2 * Math.Pow(_param[neuralNumber].Sigma, 2)));
+            return result / 2;
+        }
+
+        private double TargetFunction(Data data, Individual individual, DataType type)
+        {
+            double result = 0;
+            for (int i = 0; i < _neuralSize; i++)
+            {
+                result += individual.Param[i].W * Phi(data, individual, type, i);
+            }
+
+            return result;
+        }
+
+        private double Phi(Data data, Individual individual , DataType type, int neuralNumber)
+        {
+            double[] vector;
+            switch (type)
+            {
+                case DataType.WithoutPosition:
+                    vector = new double[]
+                    {
+                        (data.ForwardDistance - individual.Param[neuralNumber].M[0]),
+                        (data.LeftDistance - individual.Param[neuralNumber].M[0]),
+                        (data.RightDistance - individual.Param[neuralNumber].M[0])
+                    };
+                    break;
+                case DataType.WithPosition:
+                    vector = new double[]
+                    {
+                        (data.X - individual.Param[neuralNumber].M[0]),
+                        (data.Y - individual.Param[neuralNumber].M[0]),
+                        (data.ForwardDistance - individual.Param[neuralNumber].M[0]),
+                        (data.LeftDistance - individual.Param[neuralNumber].M[0]),
+                        (data.RightDistance - individual.Param[neuralNumber].M[0])
+                    };
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+
+            double vectorDistancePower2 = CalculateDistancePower2(vector);
+            double result = Math.Exp(-1 * vectorDistancePower2 / (2 * Math.Pow(individual.Param[neuralNumber].Sigma, 2)));
 
             return result;
         }

@@ -58,6 +58,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Algorithm\DataType.cs" />
+    <Compile Include="Algorithm\Individual.cs" />
     <Compile Include="Algorithm\Genetic.cs" />
     <Compile Include="Algorithm\Paramater.cs" />
     <Compile Include="App.xaml.cs">
