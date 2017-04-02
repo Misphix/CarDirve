@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GeneticAlgorithm.Algorithm
 {
-    class Individual : IComparable<Individual>
+    class Individual
     {
         public double Score => _ff(this, _type);
         public double MaxErrorDegree = 0;
@@ -16,7 +16,6 @@ namespace GeneticAlgorithm.Algorithm
 
         public Individual(int neuralSize, DataType type, FitnessFunction ff)
         {
-            
             _type = type;
             _ff = ff;
             int paramNumber = _type == DataType.WithoutPosition ? 3 : 5;
@@ -30,9 +29,11 @@ namespace GeneticAlgorithm.Algorithm
             }
         }
 
-        public int CompareTo(Individual other)
+        private Individual(DataType type, FitnessFunction ff)
         {
-            return Score.CompareTo(other.Score);
+            _type = type;
+            _ff = ff;
+            Param = new List<Paramater>();
         }
 
         public override string ToString()
@@ -48,10 +49,23 @@ namespace GeneticAlgorithm.Algorithm
                     m += $" {num:F7}";
                 }
             }
-
             result += m + sigma;
 
             return result;
+        }
+
+        public Individual Clone()
+        {
+            Individual i = new Individual(_type, _ff)
+            {
+                Theta = Theta
+            };
+            for (int j = 0; j < Param.Count; j++)
+            {
+                i.Param.Add(Param[j].Clone());
+            }
+
+            return i;
         }
     }
 }

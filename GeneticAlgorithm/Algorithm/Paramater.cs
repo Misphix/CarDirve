@@ -20,5 +20,25 @@ namespace GeneticAlgorithm.Algorithm
             W = r.NextDouble();
             Sigma = r.Next(9) + r.NextDouble();
         }
+
+        private Paramater()
+        {
+            M = new List<double>();
+        }
+
+        public Paramater Clone()
+        {
+            Paramater p = new Paramater()
+            {
+                W = W,
+                Sigma = Sigma
+            };
+            for (int i = 0; i < M.Count; i++)
+            {
+                p.M.Add(M[i]);
+            }
+
+            return p;
+        }
     }
 }

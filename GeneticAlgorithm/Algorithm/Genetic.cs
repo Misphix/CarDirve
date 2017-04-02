@@ -6,10 +6,12 @@ namespace GeneticAlgorithm.Algorithm
 {
     class Genetic
     {
+        private readonly Random rand = new Random();
         private readonly int _population, _maxIteration;
         private readonly double _mutationRate, _crossoverRate, _tolerance;
         private List<Individual> _individuals = new List<Individual>();
         private int _neuralSize;
+        private double _totalScore;
 
         public List<Data> Train4D { private get; set; }
         public List<Data> Train6D { private get; set; }
@@ -27,6 +29,7 @@ namespace GeneticAlgorithm.Algorithm
         {
             _neuralSize = neuralSize;
 
+            // initialize individual into population
             for (int i = 0; i < _population; i++)
             {
                 _individuals.Add(new Individual(neuralSize, DataType.WithoutPosition, FitnessFunction));
@@ -34,19 +37,53 @@ namespace GeneticAlgorithm.Algorithm
 
             for (int i = 0; i < _maxIteration; i++)
             {
+                _totalScore = 0;
                 foreach (Individual individual in _individuals)
                 {
+                    _totalScore += individual.Score;
                     if (individual.MaxErrorDegree < _tolerance)
                     {
                         return individual;
                     }
                 }
-
-                _individuals.Sort();
-                List<Individual> pool = new List<Individual>();
+                _individuals = Reproduction();
             }
 
             return null;
+        }
+
+        private List<Individual> Reproduction()
+        {
+            List<Individual> pool = new List<Individual>();
+            for (int i = 0; i < _individuals.Count; i++)
+            {
+                int number = (int) Math.Round((_individuals[i].Score / _totalScore) * _individuals.Count);
+                for (int j = 0; j < number; j++)
+                {
+                    pool.Add(_individuals[i].Clone());
+                    if (pool.Count >= _individuals.Count)
+                    {
+                        break;
+                    }
+                }
+
+                if (pool.Count >= _individuals.Count)
+                {
+                    break;
+                }
+            }
+
+            if (pool.Count < _individuals.Count)
+            {
+                int remain = _individuals.Count - pool.Count;
+                for (int i = 0; i < remain; i++)
+                {
+                    int random = rand.Next(_individuals.Count);
+                    pool.Add(_individuals[random].Clone());
+                }
+            }
+
+            return pool;
         }
 
         private double FitnessFunction(Individual individual, DataType type)
