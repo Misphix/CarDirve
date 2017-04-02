@@ -21,13 +21,15 @@ namespace CarDrive
             map.StartPoint = result.startPoint;
             map.Obstacles = result.obstacles;
             map.CanvasTransform = result.canvasTransform;
+            map.Goal = result.goal;
 
             return map;
         }
 
-        private (Point startPoint, List<Polyline> obstacles, double canvasTransform) ContentParser(string[] content)
+        private (Point startPoint, List<Polyline> obstacles, double canvasTransform, Polyline goal) ContentParser(string[] content)
         {
             List<Polyline> shapes = new List<Polyline>();
+            Polyline goal = new Polyline();
             Point startPoint = new Point();
             double canvasTransform = 1;
 
@@ -47,12 +49,15 @@ namespace CarDrive
                     case "CanvasTransform":
                         canvasTransform = Convert.ToDouble(data.Trim());
                         break;
+                    case "Goal":
+                        goal = ParseWall(data);
+                        break;
                     default:
                         throw new InvalidDataException();
                 }
             }
 
-            return (startPoint, shapes, canvasTransform);
+            return (startPoint, shapes, canvasTransform, goal);
         }
 
         private Point ParseStartPoint(string data)

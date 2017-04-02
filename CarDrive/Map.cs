@@ -10,6 +10,7 @@ namespace CarDrive
         public String Name { get; }
         public Point StartPoint { get; set; }
         public List<Polyline> Obstacles { get; set; }
+        public Polyline Goal { get; set; }
         public double CanvasTransform { get; set; }
 
         public Map(string name)

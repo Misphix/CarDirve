@@ -79,6 +79,15 @@ namespace CarDrive.Ui
                 };
                 MapField.Children.Add(newLine);
             }
+
+            Polyline goal = new Polyline
+            {
+                Points = TranslateCoordinates(Map.Goal.Points),
+                Stroke = Brushes.Aqua,
+                StrokeThickness = StrokeWidth,
+                FillRule = FillRule.EvenOdd
+            };
+            MapField.Children.Add(goal);
         }
 
         private void DrawCar()
