@@ -12,7 +12,7 @@ namespace GeneticAlgorithm.Algorithm
         public delegate double FitnessFunction(Individual individual, DataType type);
         private FitnessFunction _ff;
         private DataType _type;
-        private static Random r = new Random(DateTime.Now.Second);
+        private static Random rand = new Random(DateTime.Now.Second);
 
         public Individual(int neuralSize, DataType type, FitnessFunction ff)
         {
@@ -21,7 +21,7 @@ namespace GeneticAlgorithm.Algorithm
             int paramNumber = _type == DataType.WithoutPosition ? 3 : 5;
 
             Param = new List<Paramater>();
-            Theta = r.NextDouble();
+            Theta = rand.NextDouble();
 
             for (int i = 0; i < neuralSize; i++)
             {
@@ -66,6 +66,49 @@ namespace GeneticAlgorithm.Algorithm
             }
 
             return i;
+        }
+
+        public void Crossover(Individual other)
+        {
+            switch(rand.Next(2))
+            {
+                case 0:
+                    var nums = CrossoverClose(Theta, other.Theta);
+                    Theta = nums.Item1;
+                    other.Theta = nums.Item2;
+
+                    for (int i = 0; i < Param.Count; i++)
+                    {
+                        Param[i].Crossover(other.Param[i], false);
+                    }
+                    break;
+                case 1:
+                    nums = CrossoverFar(Theta, other.Theta);
+                    Theta = nums.Item1;
+                    other.Theta = nums.Item2;
+
+                    for (int i = 0; i < Param.Count; i++)
+                    {
+                        Param[i].Crossover(other.Param[i], true);
+                    }
+                    break;
+            }
+        }
+
+        private (double, double) CrossoverClose(double x1, double x2)
+        {
+            double sigma = rand.NextDouble();
+            double r1 = x1 + sigma * (x2 - x1), r2 = x2 - sigma * (x2 - x1);
+
+            return (r1, r2);
+        }
+
+        private (double, double) CrossoverFar(double x1, double x2)
+        {
+            double sigma = rand.NextDouble();
+            double r1 = x1 + sigma * (x1 - x2), r2 = x2 - sigma * (x1 - x2);
+
+            return (r1, r2);
         }
     }
 }

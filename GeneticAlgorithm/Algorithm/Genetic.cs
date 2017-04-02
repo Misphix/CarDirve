@@ -11,7 +11,7 @@ namespace GeneticAlgorithm.Algorithm
         private readonly double _mutationRate, _crossoverRate, _tolerance;
         private List<Individual> _individuals = new List<Individual>();
         private int _neuralSize;
-        private double _totalScore;
+        private double _totalScore, _maxScore;
 
         public List<Data> Train4D { private get; set; }
         public List<Data> Train6D { private get; set; }
@@ -20,7 +20,7 @@ namespace GeneticAlgorithm.Algorithm
         {
             _population = population;
             _maxIteration = maxIteration;
-            _tolerance = tolerance / 80;
+            _tolerance = tolerance;
             _mutationRate = mutation;
             _crossoverRate = crossover;
         }
@@ -38,15 +38,18 @@ namespace GeneticAlgorithm.Algorithm
             for (int i = 0; i < _maxIteration; i++)
             {
                 _totalScore = 0;
+                _maxScore = 0;
                 foreach (Individual individual in _individuals)
                 {
                     _totalScore += individual.Score;
+                    _maxScore = individual.Score > _maxScore ? individual.Score : _maxScore;
                     if (individual.MaxErrorDegree < _tolerance)
                     {
                         return individual;
                     }
                 }
-                _individuals = Reproduction();
+                List<Individual> pool = Reproduction();
+                _individuals = Crossover(pool);
             }
 
             return null;
@@ -57,7 +60,7 @@ namespace GeneticAlgorithm.Algorithm
             List<Individual> pool = new List<Individual>();
             for (int i = 0; i < _individuals.Count; i++)
             {
-                int number = (int) Math.Round((_individuals[i].Score / _totalScore) * _individuals.Count);
+                int number = (int) Math.Round((_maxScore - _individuals[i].Score) / _totalScore * _individuals.Count);
                 for (int j = 0; j < number; j++)
                 {
                     pool.Add(_individuals[i].Clone());
@@ -86,6 +89,26 @@ namespace GeneticAlgorithm.Algorithm
             return pool;
         }
 
+        private List<Individual> Crossover(List<Individual> pool)
+        {
+            List<Individual> individuals = new List<Individual>();
+
+            while (individuals.Count < pool.Count)
+            {
+                int i = rand.Next(pool.Count), j = rand.Next(pool.Count);
+                if (i == j || rand.NextDouble() > _crossoverRate)
+                {
+                    continue;
+                }
+                Individual i1 = pool[i].Clone(), i2 = pool[j].Clone();
+                i1.Crossover(i2);
+                individuals.Add(i1);
+                individuals.Add(i2);
+            }
+
+            return individuals;
+        }
+
         private double FitnessFunction(Individual individual, DataType type)
         {
             List<Data> dataList = type == DataType.WithoutPosition ? Train4D : Train6D;
@@ -95,7 +118,7 @@ namespace GeneticAlgorithm.Algorithm
             {
                 double nomoralizeErrorDegree = dataList[i].DegreeNormalize - TargetFunction(dataList[i], individual, type);
                 result += Math.Pow(nomoralizeErrorDegree, 2);
-                individual.MaxErrorDegree = Math.Abs(nomoralizeErrorDegree) > individual.MaxErrorDegree ? Math.Abs(nomoralizeErrorDegree) * 80 : individual.MaxErrorDegree * 80;
+                individual.MaxErrorDegree = Math.Abs(nomoralizeErrorDegree) > individual.MaxErrorDegree ? Math.Abs(nomoralizeErrorDegree) * 80 : individual.MaxErrorDegree;
             }
 
             return result / 2;
@@ -143,11 +166,6 @@ namespace GeneticAlgorithm.Algorithm
             double result = Math.Exp(-1 * vectorDistancePower2 / (2 * Math.Pow(individual.Param[neuralNumber].Sigma, 2)));
 
             return result;
-        }
-
-        private double GeneticVector(double value, int neuralSize)
-        {
-            return (value + 2) * neuralSize + 1;
         }
 
         private double CalculateDistancePower2(double[] vector)
