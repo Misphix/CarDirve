@@ -103,6 +103,7 @@ namespace CarDrive
         {
             Center = new Point(0, 0);
             FaceAngle = 90;
+            P.Clear();
             Render?.Invoke();
         }
 

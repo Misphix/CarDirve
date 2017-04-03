@@ -7,17 +7,17 @@ namespace CarDrive.Algorithms
     {
         public string Name { get; }
         // Forward
-        private const double ForwardFar0 = 12, ForwardFar1 = 14;
-        private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 8, ForwardMediumHigh1 = 8.7, ForwardMediumLow1 = 12;
-        private const double ForwardClose0 = 6, ForwardClose1 = 4;
+        private const double ForwardFar0 = 15, ForwardFar1 = 20;
+        private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 7, ForwardMediumHigh1 = 8.7, ForwardMediumLow1 = 11.8;
+        private const double ForwardClose0 = 9, ForwardClose1 = 4;
         // Difference
         private const double DifferenceLarge0 = 2, DifferenceLarge1 = 6;
         private const double DifferenceMediumLow0 = -7, DifferenceMediumHigh0 = -6, DifferenceMediumHigh1 = 2, DifferenceMediumLow1 = 6;
-        private const double DifferenceSmall0 = -2, DifferenceSmall1 = -6;
+        private const double DifferenceSmall0 = -1, DifferenceSmall1 = -3;
         // Steering wheel
-        private const double DegreeLarge0 = 30, DegreeLarge1 = 35;
+        private const double DegreeLarge0 = 20, DegreeLarge1 = 35;
         private const double DegreeMediumLow0 = -25, DegreeMediumHigh0 = -20, DegreeMediumHigh1 = 20, DegreeMediumLow1 = 25;
-        private const double DegreeSmall0 = -30, DegreeSmall1 = -35;
+        private const double DegreeSmall0 = -20, DegreeSmall1 = -35;
 
         private double _farForwardAlpha, _mediumForwardAlpha, _closeForwardAlpha;
         private double _largeDifferenceAlpha, _mediumDifferenceAlpha, _smallDifferenceAlpha;
@@ -66,6 +66,24 @@ namespace CarDrive.Algorithms
 
             // Forword medium and difference is small
             alpha = Math.Min(_mediumForwardAlpha, _smallDifferenceAlpha);
+            degree = TurnLeft(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
+
+            // Forword medium and difference is large
+            alpha = Math.Min(_farForwardAlpha, _largeDifferenceAlpha);
+            degree = TurnRight(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
+
+            // Forword medium and difference is medium
+            alpha = Math.Min(_farForwardAlpha, _mediumDifferenceAlpha);
+            degree = KeepWheel(alpha);
+            numerator += alpha * degree;
+            denominator += alpha;
+
+            // Forword medium and difference is small
+            alpha = Math.Min(_farForwardAlpha, _smallDifferenceAlpha);
             degree = TurnLeft(alpha);
             numerator += alpha * degree;
             denominator += alpha;
