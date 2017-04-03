@@ -21,8 +21,11 @@ namespace CarDrive.Controller
         {
             Car = new Car(redraw);
             Recorder = new Recorder.Recorder();
-            Algorithms = new ObservableCollection<Algorithm>();
-            Algorithms.Add(new NormalAlgorithm());
+            Algorithms = new ObservableCollection<Algorithm>
+            {
+                new NormalAlgorithm(),
+                new Algorithms.GeneticAlgorithm()
+            };
         }
 
         public void Start(double speed)

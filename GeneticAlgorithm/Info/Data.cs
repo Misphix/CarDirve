@@ -1,6 +1,6 @@
 ﻿namespace GeneticAlgorithm.Info
 {
-    class Data
+    public class Data
     {
         public readonly double X, Y, LeftDistance, ForwardDistance, RightDistance, Degree;
         public double DegreeNormalize => (Degree + 40) / 80;

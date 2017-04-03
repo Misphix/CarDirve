@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GeneticAlgorithm.Algorithm
 {
-    class Genetic
+    public class Genetic
     {
         private readonly Random rand = new Random();
         private readonly int _population, _maxIteration;
@@ -13,8 +13,8 @@ namespace GeneticAlgorithm.Algorithm
         private int _neuralSize;
         private double _totalScore, _maxScore;
 
-        public List<Data> Train4D { private get; set; }
-        public List<Data> Train6D { private get; set; }
+        internal List<Data> Train4D { private get; set; }
+        internal List<Data> Train6D { private get; set; }
 
         public Genetic(int population, int maxIteration, double tolerance, double mutation, double crossover)
         {
@@ -138,7 +138,7 @@ namespace GeneticAlgorithm.Algorithm
             return result / 2;
         }
 
-        private double TargetFunction(Data data, Individual individual, DataType type)
+        public double TargetFunction(Data data, Individual individual, DataType type)
         {
             double result = 0;
             for (int i = 0; i < _neuralSize; i++)

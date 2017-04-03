@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GeneticAlgorithm.Algorithm
 {
-    class Paramater
+    public class Paramater
     {
         private static Random rand = new Random(DateTime.Now.Second);
         private double _w;

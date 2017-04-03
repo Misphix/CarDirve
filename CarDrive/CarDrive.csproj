@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Algorithms\GeneticAlgorithm.cs" />
     <Compile Include="Algorithms\NormalAlgorithm.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="Controller\AlgorithController.cs" />
@@ -133,7 +134,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GeneticAlgorithm\GeneticAlgorithm.csproj">
+      <Project>{46e5ecb3-2f58-4490-aea7-7a3a28775edf}</Project>
+      <Name>GeneticAlgorithm</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -94,6 +94,11 @@ namespace CarDrive.Algorithms
             return result;
         }
 
+        public double GetDegree(double forward, double left, double right)
+        {
+            return GetDegree(forward, right - left);
+        }
+
         private void CalculateForward(double forward)
         {
             CalculateForwardFar(forward);

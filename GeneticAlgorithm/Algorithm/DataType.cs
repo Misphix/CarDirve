@@ -1,6 +1,6 @@
 ﻿namespace GeneticAlgorithm.Algorithm
 {
-    enum DataType
+    public enum DataType
     {
         WithPosition, WithoutPosition
     }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace GeneticAlgorithm.Algorithm
 {
-    class Individual
+    public class Individual
     {
-        public double Score => _ff(this, _type);
+        public double Score => _ff == null ? 1000 : _ff(this, _type);
         public double MaxErrorDegree = 0;
         public double Theta
         {
@@ -30,23 +30,35 @@ namespace GeneticAlgorithm.Algorithm
         private double _theta;
         private DataType _type;
         private static Random rand = new Random(DateTime.Now.Second);
+        private int _paramNumber;
 
         public Individual(int neuralSize, DataType type, FitnessFunction ff)
         {
             _type = type;
             _ff = ff;
-            int paramNumber = _type == DataType.WithoutPosition ? 3 : 5;
-
+            _paramNumber = _type == DataType.WithoutPosition ? 3 : 5;
             Param = new List<Paramater>();
             Theta = rand.NextDouble();
 
             for (int i = 0; i < neuralSize; i++)
             {
-                Param.Add(new Paramater(paramNumber));
+                Param.Add(new Paramater(_paramNumber));
             }
         }
 
-        private Individual(DataType type, FitnessFunction ff)
+        public Individual(int neuralSize, DataType type)
+        {
+            _type = type;
+            _paramNumber = _type == DataType.WithoutPosition ? 3 : 5;
+            Param = new List<Paramater>();
+
+            for (int i = 0; i < neuralSize; i++)
+            {
+                Param.Add(new Paramater(_paramNumber));
+            }
+        }
+
+        public Individual(DataType type, FitnessFunction ff)
         {
             _type = type;
             _ff = ff;
@@ -69,6 +81,31 @@ namespace GeneticAlgorithm.Algorithm
             result += m + sigma;
 
             return result;
+        }
+
+        public void ParseData(string data)
+        {
+            string[] numbers = data.Split(' ');
+            Theta = double.Parse(numbers[0]);
+            string m = string.Empty, sigma = string.Empty;
+            for (int i = 1; i < numbers.Length; i++)
+            {
+                if (i <= Param.Count)
+                {
+                    Param[i - 1].W = double.Parse(numbers[i]);
+                }
+                else if (i > Param.Count && i <= Param.Count * (_paramNumber + 1))
+                {
+                    int index = (i - Param.Count - 1) / _paramNumber;
+                    int remain = (i - Param.Count - 1) % _paramNumber;
+                    Param[index].M[remain] = double.Parse(numbers[i]);
+                }
+                else
+                {
+                    int index = (i - Param.Count * (_paramNumber + 1) - 1) % Param.Count;
+                    Param[index].Sigma = double.Parse(numbers[i]);
+                }
+            }
         }
 
         public Individual Clone()
@@ -118,7 +155,7 @@ namespace GeneticAlgorithm.Algorithm
             int j = Param.Count;
 
             double s = 0.2;
-            
+
             if (mutationBit == 0)
             {
                 int controlBit = rand.Next(2);
