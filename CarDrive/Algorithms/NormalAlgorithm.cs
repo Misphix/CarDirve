@@ -7,7 +7,7 @@ namespace CarDrive.Algorithms
     {
         public string Name { get; }
         // Forward
-        private const double ForwardFar0 = 15, ForwardFar1 = 20;
+        private const double ForwardFar0 = 16.6, ForwardFar1 = 19;
         private const double ForwardMediumLow0 = 5, ForwardMediumHigh0 = 7, ForwardMediumHigh1 = 8.7, ForwardMediumLow1 = 11.8;
         private const double ForwardClose0 = 9, ForwardClose1 = 4;
         // Difference
