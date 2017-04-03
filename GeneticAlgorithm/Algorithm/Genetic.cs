@@ -16,23 +16,22 @@ namespace GeneticAlgorithm.Algorithm
         internal List<Data> Train4D { private get; set; }
         internal List<Data> Train6D { private get; set; }
 
-        public Genetic(int population, int maxIteration, double tolerance, double mutation, double crossover)
+        public Genetic(int population, int maxIteration, double tolerance, double mutation, double crossover, int neuralSize)
         {
             _population = population;
             _maxIteration = maxIteration;
             _tolerance = tolerance;
             _mutationRate = mutation;
             _crossoverRate = crossover;
+            _neuralSize = neuralSize;
         }
 
-        public Individual Start(int neuralSize)
+        public Individual Start()
         {
-            _neuralSize = neuralSize;
-
             // initialize individual into population
             for (int i = 0; i < _population; i++)
             {
-                _individuals.Add(new Individual(neuralSize, DataType.WithoutPosition, FitnessFunction));
+                _individuals.Add(new Individual(_neuralSize, DataType.WithoutPosition, FitnessFunction));
             }
 
             for (int i = 0; i < _maxIteration; i++)
@@ -42,18 +41,23 @@ namespace GeneticAlgorithm.Algorithm
                 foreach (Individual individual in _individuals)
                 {
                     _totalScore += individual.Score;
-                    _maxScore = individual.Score > _maxScore ? individual.Score : _maxScore;
-                    if (individual.MaxErrorDegree < _tolerance)
-                    {
-                        return individual;
-                    }
+                    _maxScore = Math.Max(individual.Score, _maxScore);
                 }
                 List<Individual> pool = Reproduction();
                 _individuals = Crossover(pool);
                 Mutation();
             }
 
-            return null;
+            Individual minErrorIndividual = _individuals[0];
+            foreach (Individual individual in _individuals)
+            {
+                if (individual.Score < minErrorIndividual.Score)
+                {
+                    minErrorIndividual = individual;
+                }
+            }
+
+            return minErrorIndividual;
         }
 
         private List<Individual> Reproduction()
@@ -132,7 +136,7 @@ namespace GeneticAlgorithm.Algorithm
             {
                 double nomoralizeErrorDegree = dataList[i].DegreeNormalize - TargetFunction(dataList[i], individual, type);
                 result += Math.Pow(nomoralizeErrorDegree, 2);
-                individual.MaxErrorDegree = Math.Abs(nomoralizeErrorDegree) > individual.MaxErrorDegree ? Math.Abs(nomoralizeErrorDegree) * 80 : individual.MaxErrorDegree;
+                individual.MaxErrorDegree = Math.Max(Math.Abs(nomoralizeErrorDegree) * 80, individual.MaxErrorDegree);
             }
 
             return result / 2;

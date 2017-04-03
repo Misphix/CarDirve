@@ -6,21 +6,40 @@ namespace GeneticAlgorithm.Algorithm
     public class Paramater
     {
         private static Random rand = new Random(DateTime.Now.Second);
+        private const double _MaxW = 1, _MaxSigma = 10, _MaxM = 30;
+        private const double _MinW = 0, _MinSigam = 0, _MinM = 0;
         private double _w;
-        public double Sigma; // σ
+        private double _sigma;
+        // σ
+        public double Sigma
+        {
+            get { return _sigma; }
+            set
+            {
+                _sigma = value;
+                if (value > _MaxSigma)
+                {
+                    _sigma = 10 * rand.NextDouble();
+                }
+                if (value < _MinSigam)
+                {
+                    Sigma = 2 * rand.NextDouble();
+                }
+            }
+        }
         public double W
         {
             get { return _w; }
             set
             {
                 _w = value;
-                if (value > 1)
+                if (value > _MaxW)
                 {
-                    _w = 1;
+                    _w = _MaxW * rand.NextDouble();
                 }
-                if (value < 0)
+                if (value < _MinW)
                 {
-                    _w = 0;
+                    _w = 0.2 * rand.NextDouble();
                 }
             }
         }
@@ -73,8 +92,31 @@ namespace GeneticAlgorithm.Algorithm
                     for (int i = 0; i < M.Count; i++)
                     {
                         nums = CrossoverClose(M[i], other.M[i]);
-                        M[i] = nums.Item1;
-                        other.M[i] = nums.Item2;
+                        if (nums.Item1 > _MaxM)
+                        {
+                            M[i] = _MaxM * rand.NextDouble();
+                        }
+                        else if (nums.Item1 < _MinM)
+                        {
+                            M[i] = rand.NextDouble();
+                        }
+                        else
+                        {
+                            M[i] = nums.Item1;
+                        }
+
+                        if (nums.Item2 > _MaxM)
+                        {
+                            other.M[i] = _MaxM * rand.NextDouble();
+                        }
+                        else if (nums.Item1 < _MinM)
+                        {
+                            other.M[i] = rand.NextDouble();
+                        }
+                        else
+                        {
+                            other.M[i] = nums.Item2;
+                        }
                     }
                     break;
                 case true:
@@ -88,9 +130,34 @@ namespace GeneticAlgorithm.Algorithm
 
                     for (int i = 0; i < M.Count; i++)
                     {
+
                         nums = CrossoverFar(M[i], other.M[i]);
-                        M[i] = nums.Item1;
-                        other.M[i] = nums.Item2;
+                        
+                        if (nums.Item1 > _MaxM)
+                        {
+                            M[i] = _MaxM * rand.NextDouble();
+                        }
+                        else if (nums.Item1 < _MinM)
+                        {
+                            M[i] = rand.NextDouble();
+                        }
+                        else
+                        {
+                            M[i] = nums.Item1;
+                        }
+
+                        if (nums.Item2 > _MaxM)
+                        {
+                            other.M[i] = _MaxM * rand.NextDouble();
+                        }
+                        else if (nums.Item1 < _MinM)
+                        {
+                            other.M[i] = rand.NextDouble();
+                        }
+                        else
+                        {
+                            other.M[i] = nums.Item2;
+                        }
                     }
                     break;
             }
@@ -121,7 +188,6 @@ namespace GeneticAlgorithm.Algorithm
                 int controlBit = rand.Next(2);
                 double noise = rand.Next(9) + rand.NextDouble();
                 Sigma = controlBit == 1 ? Sigma + s * noise : Sigma - s * noise;
-                // theta
             }
             else if (mutationBit == 1)
             {
@@ -131,9 +197,24 @@ namespace GeneticAlgorithm.Algorithm
             }
             else
             {
+                double result = 0;
+
                 int controlBit = rand.Next(2);
                 double noise = rand.Next(30) + rand.NextDouble();
-                M[mutationBit - 2] = controlBit == 1 ? M[mutationBit - 2] + s * noise : M[mutationBit - 2] - s * noise;
+                result = controlBit == 1 ? M[mutationBit - 2] + s * noise : M[mutationBit - 2] - s * noise;
+
+                if (result > _MaxM)
+                {
+                    M[mutationBit -2] = _MaxM * rand.NextDouble();
+                }
+                else if (result < _MinM)
+                {
+                    M[mutationBit -2] = rand.NextDouble();
+                }
+                else
+                {
+                    M[mutationBit - 2] = result;
+                }
             }
         }
     }

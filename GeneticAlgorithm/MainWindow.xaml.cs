@@ -52,12 +52,12 @@ namespace GeneticAlgorithm
             double crossover = double.Parse(Crossover.Text);
             int neural = int.Parse(Neural.Text);
 
-            Genetic genetic = new Genetic(population, maxIteration, tolerance, mutation, crossover)
+            Genetic genetic = new Genetic(population, maxIteration, tolerance, mutation, crossover, neural)
             {
                 Train4D = _dataReader.Data4D,
                 Train6D = _dataReader.Data6D
             };
-            Console.Text = genetic.Start(neural).ToString();
+            Console.Text = genetic.Start().ToString();
             _canExecuted = true;
         }
 

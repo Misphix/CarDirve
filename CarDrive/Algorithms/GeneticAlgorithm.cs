@@ -18,8 +18,8 @@ namespace CarDrive.Algorithms
         public GeneticAlgorithm()
         {
             Name = "Genetic Algorithm";
-            _genetic = new Genetic(0, 0, 0, 0, 0);
             ReadIndividual();
+            _genetic = new Genetic(0, 0, 0, 0, 0, _neuralSize);
         }
 
         public double GetDegree(double forward, double difference)

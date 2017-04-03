@@ -13,13 +13,13 @@ namespace GeneticAlgorithm.Algorithm
             set
             {
                 _theta = value;
-                if (value < 0)
+                if (value < _MinTheta)
                 {
-                    _theta = 0;
+                    _theta = 0.2 * rand.NextDouble();
                 }
-                if (value > 1)
+                if (value > _MaxTheta)
                 {
-                    _theta = 1;
+                    _theta = _MaxTheta * rand.NextDouble();
                 }
             }
         }
@@ -31,6 +31,7 @@ namespace GeneticAlgorithm.Algorithm
         private DataType _type;
         private static Random rand = new Random(DateTime.Now.Second);
         private int _paramNumber;
+        private const double _MaxTheta = 1, _MinTheta = 0;
 
         public Individual(int neuralSize, DataType type, FitnessFunction ff)
         {
