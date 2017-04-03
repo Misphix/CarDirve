@@ -114,6 +114,20 @@ namespace CarDrive.Ui
                 StrokeThickness = StrokeWidth
             };
             MapField.Children.Add(direction);
+
+            foreach (var p in _controller.Car.P)
+            {
+                Line d = new Line
+                {
+                    X1 = center.X,
+                    Y1 = center.Y,
+                    X2 = TranslateCoordinate(p).X,
+                    Y2 = TranslateCoordinate(p).Y,
+                    Stroke = Brushes.Purple,
+                    StrokeThickness = StrokeWidth
+                };
+                MapField.Children.Add(d);
+            }
         }
 
         private void DrawPath()

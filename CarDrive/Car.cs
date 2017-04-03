@@ -10,6 +10,8 @@ namespace CarDrive
         private double _angle;
         private const double Tolerance = double.Epsilon * 20;
 
+        public List<Point> P = new List<Point>();
+
         public delegate void Redraw();
         private event Redraw Render;
         private Point _center;
@@ -64,6 +66,7 @@ namespace CarDrive
         /// <exception cref="ArgumentException">Degree is larger than 40 degree.</exception>
         public void Move(double degree)
         {
+            P.Clear();
             if (Math.Abs(degree) > 40)
             {
                 throw new ArgumentException();
@@ -121,6 +124,7 @@ namespace CarDrive
         private double GetDistanceFromDegree(double degree)
         {
             double distance = double.MaxValue, bonusRadian = degree * Math.PI / 180;
+            Point p = new Point(1000, 1000);
 
             Line laser = new Line()
             {
@@ -145,10 +149,15 @@ namespace CarDrive
                     Point? intersectionPoint = Intersect(laser, obstacle);
                     if (intersectionPoint.HasValue)
                     {
+                        if (distance > GetTwoPointDistance(Center, intersectionPoint.Value))
+                        {
+                            p = intersectionPoint.Value;
+                        }
                         distance = Math.Min(distance, GetTwoPointDistance(Center, intersectionPoint.Value));
                     }
                 }
             }
+            P.Add(p);
 
             return distance;
         }
@@ -185,7 +194,9 @@ namespace CarDrive
             double obsMaxX = Math.Max(obstacle.X1, obstacle.X2);
             double obsMinY = Math.Min(obstacle.Y1, obstacle.Y2);
             double obsMaxY = Math.Max(obstacle.Y1, obstacle.Y2);
-            if (intersectPoint.X < obsMinX || intersectPoint.X > obsMaxX || intersectPoint.Y < obsMinY || intersectPoint.Y > obsMaxY)
+
+            double tolerance = 0.0001;
+            if (intersectPoint.X < obsMinX - tolerance || intersectPoint.X > obsMaxX + tolerance || intersectPoint.Y < obsMinY - tolerance || intersectPoint.Y > obsMaxY + tolerance)
             {
                 return null;
             }
