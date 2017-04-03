@@ -2,6 +2,7 @@
 using GeneticAlgorithm.Algorithm;
 using System.IO;
 using System.Diagnostics;
+using GeneticAlgorithm.Info;
 
 namespace CarDrive.Algorithms
 {
@@ -11,11 +12,13 @@ namespace CarDrive.Algorithms
         private const string path = "individual";
         private DataType _type;
         private int _neuralSize, _dataSize;
+        private Individual _individual;
+        private Genetic _genetic;
 
         public GeneticAlgorithm()
         {
             Name = "Genetic Algorithm";
-            Genetic genetic = new Genetic(0, 0, 0, 0, 0);
+            _genetic = new Genetic(0, 0, 0, 0, 0);
             ReadIndividual();
         }
 
@@ -26,7 +29,10 @@ namespace CarDrive.Algorithms
 
         public double GetDegree(double forward, double left, double right)
         {
-            throw new NotImplementedException();
+            Data d = new Data(0, 0, forward, left, right, 0);
+            double result = _genetic.TargetFunction(d, _individual, _type);
+
+            return result * 80 - 40;
         }
 
         private void ReadIndividual()
@@ -65,8 +71,8 @@ namespace CarDrive.Algorithms
         private void ParseIndividual(string data)
         {
             data = data.Trim();
-            Individual individual = new Individual(_neuralSize, _type);
-            individual.ParseData(data);
+            _individual = new Individual(_neuralSize, _type);
+            _individual.ParseData(data);
         }
     }
 }
