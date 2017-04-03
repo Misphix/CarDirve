@@ -6,8 +6,24 @@ namespace GeneticAlgorithm.Algorithm
     class Paramater
     {
         private static Random rand = new Random(DateTime.Now.Second);
+        private double _w;
         public double Sigma; // σ
-        public double W;
+        public double W
+        {
+            get { return _w; }
+            set
+            {
+                _w = value;
+                if (value > 1)
+                {
+                    _w = 1;
+                }
+                if (value < 0)
+                {
+                    _w = 0;
+                }
+            }
+        }
         public List<double> M;
 
         public Paramater(int dataNumber)
@@ -15,7 +31,7 @@ namespace GeneticAlgorithm.Algorithm
             M = new List<double>();
             for (int i = 0; i < dataNumber; i++)
             {
-                M.Add(rand.NextDouble());
+                M.Add(rand.NextDouble() + rand.Next(30));
             }
             W = rand.NextDouble();
             Sigma = rand.Next(9) + rand.NextDouble();
@@ -94,6 +110,31 @@ namespace GeneticAlgorithm.Algorithm
             double r1 = x1 + sigma * (x1 - x2), r2 = x2 - sigma * (x1 - x2);
 
             return (r1, r2);
+        }
+
+        public void Mutation(int mutationBit)
+        {
+            double s = 0.2;
+
+            if (mutationBit == 0)
+            {
+                int controlBit = rand.Next(2);
+                double noise = rand.Next(9) + rand.NextDouble();
+                Sigma = controlBit == 1 ? Sigma + s * noise : Sigma - s * noise;
+                // theta
+            }
+            else if (mutationBit == 1)
+            {
+                int controlBit = rand.Next(2);
+                double noise = rand.NextDouble();
+                W = controlBit == 1 ? W + s * noise : W - s * noise;
+            }
+            else
+            {
+                int controlBit = rand.Next(2);
+                double noise = rand.Next(30) + rand.NextDouble();
+                M[mutationBit - 2] = controlBit == 1 ? M[mutationBit - 2] + s * noise : M[mutationBit - 2] - s * noise;
+            }
         }
     }
 }

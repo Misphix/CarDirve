@@ -46,8 +46,8 @@ namespace GeneticAlgorithm
         {
             _canExecuted = false;
             int population = int.Parse(Population.Text);
-            int tolerance = int.Parse(Accept.Text);
             int maxIteration = int.Parse(MaxIteration.Text);
+            double tolerance = double.Parse(Accept.Text);
             double mutation = double.Parse(Mutation.Text);
             double crossover = double.Parse(Crossover.Text);
             int neural = int.Parse(Neural.Text);

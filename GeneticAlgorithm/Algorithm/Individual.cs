@@ -7,10 +7,27 @@ namespace GeneticAlgorithm.Algorithm
     {
         public double Score => _ff(this, _type);
         public double MaxErrorDegree = 0;
-        public double Theta;
+        public double Theta
+        {
+            get { return _theta; }
+            set
+            {
+                _theta = value;
+                if (value < 0)
+                {
+                    _theta = 0;
+                }
+                if (value > 1)
+                {
+                    _theta = 1;
+                }
+            }
+        }
         public readonly List<Paramater> Param;
         public delegate double FitnessFunction(Individual individual, DataType type);
+        public int GeneticVectorSize => VectorSize();
         private FitnessFunction _ff;
+        private double _theta;
         private DataType _type;
         private static Random rand = new Random(DateTime.Now.Second);
 
@@ -70,7 +87,7 @@ namespace GeneticAlgorithm.Algorithm
 
         public void Crossover(Individual other)
         {
-            switch(rand.Next(2))
+            switch (rand.Next(2))
             {
                 case 0:
                     var nums = CrossoverClose(Theta, other.Theta);
@@ -95,6 +112,27 @@ namespace GeneticAlgorithm.Algorithm
             }
         }
 
+        public void Mutation(int mutationBit)
+        {
+            int p = _type == DataType.WithoutPosition ? 3 : 5;
+            int j = Param.Count;
+
+            double s = 0.2;
+            
+            if (mutationBit == 0)
+            {
+                int controlBit = rand.Next(2);
+                Theta = controlBit == 1 ? Theta + s * rand.NextDouble() : Theta - s * rand.NextDouble();
+                // theta
+            }
+            else
+            {
+                int index = (mutationBit - 1) / (p + 2);
+                int remain = (mutationBit - 1) % (p + 2);
+                Param[index].Mutation(remain);
+            }
+        }
+
         private (double, double) CrossoverClose(double x1, double x2)
         {
             double sigma = rand.NextDouble();
@@ -109,6 +147,14 @@ namespace GeneticAlgorithm.Algorithm
             double r1 = x1 + sigma * (x1 - x2), r2 = x2 - sigma * (x1 - x2);
 
             return (r1, r2);
+        }
+
+        private int VectorSize()
+        {
+            int p = _type == DataType.WithoutPosition ? 3 : 5;
+            int j = Param.Count;
+
+            return (p + 2) * j + 1;
         }
     }
 }

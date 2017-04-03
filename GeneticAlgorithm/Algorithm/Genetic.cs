@@ -16,7 +16,7 @@ namespace GeneticAlgorithm.Algorithm
         public List<Data> Train4D { private get; set; }
         public List<Data> Train6D { private get; set; }
 
-        public Genetic(int population, int maxIteration, int tolerance, double mutation, double crossover)
+        public Genetic(int population, int maxIteration, double tolerance, double mutation, double crossover)
         {
             _population = population;
             _maxIteration = maxIteration;
@@ -50,6 +50,7 @@ namespace GeneticAlgorithm.Algorithm
                 }
                 List<Individual> pool = Reproduction();
                 _individuals = Crossover(pool);
+                Mutation();
             }
 
             return null;
@@ -107,6 +108,19 @@ namespace GeneticAlgorithm.Algorithm
             }
 
             return individuals;
+        }
+
+        private void Mutation()
+        {
+            foreach (Individual individual in _individuals)
+            {
+                if (rand.NextDouble() > _mutationRate)
+                {
+                    continue;
+                }
+                int mutationBit = rand.Next(individual.GeneticVectorSize);
+                individual.Mutation(mutationBit);
+            }
         }
 
         private double FitnessFunction(Individual individual, DataType type)
