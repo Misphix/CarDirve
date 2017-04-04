@@ -42,6 +42,10 @@ namespace GeneticAlgorithm.Algorithm
                 {
                     _totalScore += individual.Score;
                     _maxScore = Math.Max(individual.Score, _maxScore);
+                    if (individual.MaxErrorDegree < _tolerance)
+                    {
+                        return individual;
+                    }
                 }
                 List<Individual> pool = Reproduction();
                 _individuals = Crossover(pool);
@@ -98,17 +102,21 @@ namespace GeneticAlgorithm.Algorithm
         {
             List<Individual> individuals = new List<Individual>();
 
-            while (individuals.Count < pool.Count)
+            foreach (Individual individual in pool)
             {
-                int i = rand.Next(pool.Count), j = rand.Next(pool.Count);
-                if (i == j || rand.NextDouble() > _crossoverRate)
+                if (rand.NextDouble() > _crossoverRate)
                 {
-                    continue;
+                    individuals.Add(individual.Clone());
                 }
-                Individual i1 = pool[i].Clone(), i2 = pool[j].Clone();
-                i1.Crossover(i2);
-                individuals.Add(i1);
-                individuals.Add(i2);
+                else
+                {
+                    int target = rand.Next(_population);
+                    Individual i1 = individual.Clone();
+                    Individual i2 = pool[target].Clone();
+
+                    i1.Crossover(i2);
+                    individuals.Add(i1);
+                }
             }
 
             return individuals;

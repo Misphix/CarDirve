@@ -125,26 +125,52 @@ namespace GeneticAlgorithm.Algorithm
 
         public void Crossover(Individual other)
         {
+            int isOnePoint = rand.Next(2);
+            int s = rand.Next(VectorSize());
+            int e = isOnePoint == 1 ? s : rand.Next(VectorSize());
+            int start = Math.Min(s, e), end = Math.Max(s, e);
+            int paramSize = _type == DataType.WithoutPosition ? 3 + 2 : 5 + 2;
+
             switch (rand.Next(2))
             {
                 case 0:
-                    var nums = CrossoverClose(Theta, other.Theta);
-                    Theta = nums.Item1;
-                    other.Theta = nums.Item2;
-
-                    for (int i = 0; i < Param.Count; i++)
+                    if (start == 0)
                     {
-                        Param[i].Crossover(other.Param[i], false);
+                        var nums = CrossoverClose(Theta, other.Theta);
+                        Theta = nums.Item1;
+                        other.Theta = nums.Item2;
+                    }
+
+                    if (end > 0)
+                    {
+                        int startParam = (start - 1) / paramSize;
+
+                        for(int i = start == 0 ? 1 : start; i <= end; i++)
+                        {
+                            int param = (i - 1) / paramSize;
+                            int crossoverBit = (i - 1) % paramSize;
+                            Param[param].Crossover(other.Param[param], false, crossoverBit);
+                        }
                     }
                     break;
                 case 1:
-                    nums = CrossoverFar(Theta, other.Theta);
-                    Theta = nums.Item1;
-                    other.Theta = nums.Item2;
-
-                    for (int i = 0; i < Param.Count; i++)
+                    if (start == 0)
                     {
-                        Param[i].Crossover(other.Param[i], true);
+                        var nums = CrossoverFar(Theta, other.Theta);
+                        Theta = nums.Item1;
+                        other.Theta = nums.Item2;
+                    }
+
+                    if (end > 0)
+                    {
+                        int startParam = (start - 1) / paramSize;
+
+                        for (int i = start == 0 ? 1 : start; i <= end; i++)
+                        {
+                            int param = (i - 1) / paramSize;
+                            int crossoverBit = (i - 1) % paramSize;
+                            Param[param].Crossover(other.Param[param], true, crossoverBit);
+                        }
                     }
                     break;
             }
@@ -153,7 +179,6 @@ namespace GeneticAlgorithm.Algorithm
         public void Mutation(int mutationBit)
         {
             int p = _type == DataType.WithoutPosition ? 3 : 5;
-            int j = Param.Count;
 
             double s = 0.2;
 

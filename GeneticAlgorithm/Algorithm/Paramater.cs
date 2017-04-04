@@ -76,22 +76,27 @@ namespace GeneticAlgorithm.Algorithm
             return p;
         }
 
-        public void Crossover(Paramater other, bool far)
+        public void Crossover(Paramater other, bool far, int crossoverBit)
         {
             switch (far)
             {
                 case false:
-                    var nums = CrossoverClose(Sigma, other.Sigma);
-                    Sigma = nums.Item1;
-                    other.Sigma = nums.Item2;
-
-                    nums = CrossoverClose(W, other.W);
-                    W = nums.Item1;
-                    other.W = nums.Item2;
-
-                    for (int i = 0; i < M.Count; i++)
+                    if (crossoverBit == 0)
                     {
-                        nums = CrossoverClose(M[i], other.M[i]);
+                        var nums = CrossoverClose(Sigma, other.Sigma);
+                        Sigma = nums.Item1;
+                        other.Sigma = nums.Item2;
+                    }
+                    else if (crossoverBit == 1)
+                    {
+                        var nums = CrossoverClose(W, other.W);
+                        W = nums.Item1;
+                        other.W = nums.Item2;
+                    }
+                    else
+                    {
+                        int i = crossoverBit - 2;
+                        var nums = CrossoverClose(M[i], other.M[i]);
                         if (nums.Item1 > _MaxM)
                         {
                             M[i] = _MaxM * rand.NextDouble();
@@ -120,18 +125,22 @@ namespace GeneticAlgorithm.Algorithm
                     }
                     break;
                 case true:
-                    nums = CrossoverFar(Sigma, other.Sigma);
-                    Sigma = nums.Item1;
-                    other.Sigma = nums.Item2;
-
-                    nums = CrossoverFar(W, other.W);
-                    W = nums.Item1;
-                    other.W = nums.Item2;
-
-                    for (int i = 0; i < M.Count; i++)
+                    if (crossoverBit == 0)
                     {
-
-                        nums = CrossoverFar(M[i], other.M[i]);
+                        var nums = CrossoverFar(Sigma, other.Sigma);
+                        Sigma = nums.Item1;
+                        other.Sigma = nums.Item2;
+                    }
+                    else if (crossoverBit == 1)
+                    {
+                        var nums = CrossoverFar(W, other.W);
+                        W = nums.Item1;
+                        other.W = nums.Item2;
+                    }
+                    else
+                    {
+                        int i = crossoverBit - 2;
+                        var nums = CrossoverFar(M[i], other.M[i]);
                         
                         if (nums.Item1 > _MaxM)
                         {
