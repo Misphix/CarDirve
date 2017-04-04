@@ -170,18 +170,18 @@ namespace GeneticAlgorithm.Algorithm
                     vector = new double[]
                     {
                         (data.ForwardDistance - individual.Param[neuralNumber].M[0]),
-                        (data.LeftDistance - individual.Param[neuralNumber].M[0]),
-                        (data.RightDistance - individual.Param[neuralNumber].M[0])
+                        (data.LeftDistance - individual.Param[neuralNumber].M[1]),
+                        (data.RightDistance - individual.Param[neuralNumber].M[2])
                     };
                     break;
                 case DataType.WithPosition:
                     vector = new double[]
                     {
                         (data.X - individual.Param[neuralNumber].M[0]),
-                        (data.Y - individual.Param[neuralNumber].M[0]),
-                        (data.ForwardDistance - individual.Param[neuralNumber].M[0]),
-                        (data.LeftDistance - individual.Param[neuralNumber].M[0]),
-                        (data.RightDistance - individual.Param[neuralNumber].M[0])
+                        (data.Y - individual.Param[neuralNumber].M[1]),
+                        (data.ForwardDistance - individual.Param[neuralNumber].M[2]),
+                        (data.LeftDistance - individual.Param[neuralNumber].M[3]),
+                        (data.RightDistance - individual.Param[neuralNumber].M[4])
                     };
                     break;
                 default:
