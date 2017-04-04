@@ -155,13 +155,13 @@ namespace GeneticAlgorithm.Algorithm
             double result = 0;
             for (int i = 0; i < _neuralSize; i++)
             {
-                result += individual.Param[i].W * Phi(data, individual, type, i);
+                result += individual.Param[i].W * Phi(data, individual.Param[i], type);
             }
 
             return result + individual.Theta;
         }
 
-        private double Phi(Data data, Individual individual , DataType type, int neuralNumber)
+        private double Phi(Data data, Paramater param , DataType type)
         {
             double[] vector;
             switch (type)
@@ -169,19 +169,19 @@ namespace GeneticAlgorithm.Algorithm
                 case DataType.WithoutPosition:
                     vector = new double[]
                     {
-                        (data.ForwardDistance - individual.Param[neuralNumber].M[0]),
-                        (data.LeftDistance - individual.Param[neuralNumber].M[1]),
-                        (data.RightDistance - individual.Param[neuralNumber].M[2])
+                        (data.ForwardDistance - param.M[0]),
+                        (data.LeftDistance - param.M[1]),
+                        (data.RightDistance - param.M[2])
                     };
                     break;
                 case DataType.WithPosition:
                     vector = new double[]
                     {
-                        (data.X - individual.Param[neuralNumber].M[0]),
-                        (data.Y - individual.Param[neuralNumber].M[1]),
-                        (data.ForwardDistance - individual.Param[neuralNumber].M[2]),
-                        (data.LeftDistance - individual.Param[neuralNumber].M[3]),
-                        (data.RightDistance - individual.Param[neuralNumber].M[4])
+                        (data.X - param.M[0]),
+                        (data.Y - param.M[1]),
+                        (data.ForwardDistance - param.M[2]),
+                        (data.LeftDistance - param.M[3]),
+                        (data.RightDistance - param.M[4])
                     };
                     break;
                 default:
@@ -189,7 +189,7 @@ namespace GeneticAlgorithm.Algorithm
             }
 
             double vectorDistancePower2 = CalculateDistancePower2(vector);
-            double result = Math.Exp(-1 * vectorDistancePower2 / (2 * Math.Pow(individual.Param[neuralNumber].Sigma, 2)));
+            double result = Math.Exp(-1 * vectorDistancePower2 / (2 * Math.Pow(param.Sigma, 2)));
 
             return result;
         }
