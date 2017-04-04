@@ -1,8 +1,7 @@
 ﻿using System;
-using GeneticAlgorithm.Algorithm;
 using System.IO;
 using System.Diagnostics;
-using GeneticAlgorithm.Info;
+using System.Collections.Generic;
 
 namespace CarDrive.Algorithms
 {
@@ -10,16 +9,16 @@ namespace CarDrive.Algorithms
     {
         public string Name { get; }
         private const string path = "individual";
-        private DataType _type;
         private int _neuralSize, _dataSize;
-        private Individual _individual;
-        private Genetic _genetic;
+        private double _theta;
+        private double[] _weight, _distance, _sigma;
+
 
         public GeneticAlgorithm()
         {
             Name = "Genetic Algorithm";
             ReadIndividual();
-            _genetic = new Genetic(0, 0, 0, 0, 0, _neuralSize);
+
         }
 
         public double GetDegree(double forward, double difference)
@@ -29,10 +28,11 @@ namespace CarDrive.Algorithms
 
         public double GetDegree(double forward, double left, double right)
         {
-            Data d = new Data(0, 0, forward, left, right, 0);
-            double result = _genetic.TargetFunction(d, _individual, _type);
+            Rbf rbf = new Rbf(_neuralSize);
+            rbf.SetParameter(_theta, _weight, _distance, _sigma);
 
-            return result * 80 - 40;
+            double[] dis = { forward, right, left };
+            return rbf.GetOutput(dis);
         }
 
         private void ReadIndividual()
@@ -47,14 +47,6 @@ namespace CarDrive.Algorithms
                 {
                     case "Data":
                         _dataSize = int.Parse(tokens[1]);
-                        if (_dataSize == 3)
-                        {
-                            _type = DataType.WithoutPosition;
-                        }
-                        else if (_dataSize == 5)
-                        {
-                            _type = DataType.WithPosition;
-                        }
                         break;
                     case "Neural":
                         _neuralSize = int.Parse(tokens[1]);
@@ -71,8 +63,34 @@ namespace CarDrive.Algorithms
         private void ParseIndividual(string data)
         {
             data = data.Trim();
-            _individual = new Individual(_neuralSize, _type);
-            _individual.ParseData(data);
+            string[] tokens = data.Split(' ');
+            List<double> weight = new List<double>();
+            List<double> distance = new List<double>();
+            List<double> sigma = new List<double>();
+
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                if (i == 0)
+                {
+                    _theta = double.Parse(tokens[i]);
+                }
+                else if (i > 0 && i <=_neuralSize)
+                {
+                    weight.Add(double.Parse(tokens[i]));
+                }
+                else if (i > _neuralSize && i <= _neuralSize * (_dataSize + 1))
+                {
+                    distance.Add(double.Parse(tokens[i]));
+                }
+                else if (i > _neuralSize * (_dataSize + 1))
+                {
+                    sigma.Add(double.Parse(tokens[i]));
+                }
+            }
+
+            _weight = weight.ToArray();
+            _distance = distance.ToArray();
+            _sigma = sigma.ToArray();
         }
     }
 }
