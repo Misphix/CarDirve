@@ -31,8 +31,7 @@ namespace CarDrive.Algorithms
             Rbf rbf = new Rbf(_neuralSize);
             rbf.SetParameter(_theta, _weight, _distance, _sigma);
 
-            double[] dis = { forward, right, left };
-            return rbf.GetOutput(dis);
+            return rbf.GetOutput(forward, right, left);
         }
 
         private void ReadIndividual()

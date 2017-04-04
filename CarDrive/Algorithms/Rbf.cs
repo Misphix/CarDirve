@@ -37,15 +37,16 @@ namespace CarDrive.Algorithms
             return neuronCount;
         }
 
-        public double GetOutput(double[] _inputDistance)
+        public double GetOutput(double forward, double right, double left)
         {
-            Debug.Assert(_inputDistance.Length == distance.Length / neuronCount);
             Debug.Assert(neuronCount == sigma.Length);
+
             int dimensions = distance.Length / neuronCount;
             double value = theta;
+            double[] inputDistance = { forward, right, left };
             for (int i = 0; i < neuronCount; i++)
             {
-                double result = neuron.getAngle(_inputDistance, CopyOfRange(distance, i * dimensions, i * dimensions + dimensions), this.sigma[i]);
+                double result = neuron.getAngle(inputDistance, CopyOfRange(distance, i * dimensions, i * dimensions + dimensions), sigma[i]);
                 value += weights[i] * result;
             }
             return value;
