@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace CarDrive.Algorithms
 {
-    class GeneticAlgorithm : Algorithm
+    class GeneticAlgorithm : IAlgorithm
     {
         public string Name { get; }
-        private const string path = "individual";
+        private const string Path = "individual";
         private int _neuralSize, _dataSize;
         private double _theta;
         private double[] _weight, _distance, _sigma;
@@ -21,11 +20,6 @@ namespace CarDrive.Algorithms
 
         }
 
-        public double GetDegree(double forward, double difference)
-        {
-            throw new NotImplementedException();
-        }
-
         public double GetDegree(double forward, double left, double right)
         {
             Rbf rbf = new Rbf(_neuralSize);
@@ -36,9 +30,9 @@ namespace CarDrive.Algorithms
 
         private void ReadIndividual()
         {
-            Debug.Assert(File.Exists(path));
+            Debug.Assert(File.Exists(Path));
 
-            string[] content = File.ReadAllLines(path);
+            string[] content = File.ReadAllLines(Path);
             foreach (string line in content)
             {
                 string[] tokens = line.Split(':');

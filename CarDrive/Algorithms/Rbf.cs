@@ -5,49 +5,49 @@ namespace CarDrive.Algorithms
 {
     class Rbf
     {
-        private int neuronCount = 0; // J number of neuron
-        private double[] weights; // w
-        private double[] distance; // m
-        private double[] sigma;
-        private double theta;
-        Neuron neuron;
+        private readonly int _neuronCount; // J number of neuron
+        private double[] _weights; // w
+        private double[] _distance; // m
+        private double[] _sigma;
+        private double _theta;
+        private readonly Neuron _neuron;
 
 
-        public Rbf(int _neuronNumber)
+        public Rbf(int neuronNumber)
         {
-            Debug.Assert(_neuronNumber > 0);
-            neuronCount = _neuronNumber;
+            Debug.Assert(neuronNumber > 0);
+            _neuronCount = neuronNumber;
 
-            neuron = new Neuron();
+            _neuron = new Neuron();
 
         }
 
-        public void SetParameter(double _theta, double[] _weights, double[] _distance, double[] _sigma)
+        public void SetParameter(double theta, double[] weights, double[] distance, double[] sigma)
         {
-            Debug.Assert(neuronCount == _weights.Length);
+            Debug.Assert(_neuronCount == weights.Length);
 
-            weights = _weights;
-            theta = _theta;
-            sigma = _sigma;
-            distance = _distance;
+            _weights = weights;
+            _theta = theta;
+            _sigma = sigma;
+            _distance = distance;
         }
 
         public int GetNeuronCount()
         {
-            return neuronCount;
+            return _neuronCount;
         }
 
         public double GetOutput(double forward, double right, double left)
         {
-            Debug.Assert(neuronCount == sigma.Length);
+            Debug.Assert(_neuronCount == _sigma.Length);
 
-            int dimensions = distance.Length / neuronCount;
-            double value = theta;
+            int dimensions = _distance.Length / _neuronCount;
+            double value = _theta;
             double[] inputDistance = { forward, right, left };
-            for (int i = 0; i < neuronCount; i++)
+            for (int i = 0; i < _neuronCount; i++)
             {
-                double result = neuron.getAngle(inputDistance, CopyOfRange(distance, i * dimensions, i * dimensions + dimensions), sigma[i]);
-                value += weights[i] * result;
+                double result = _neuron.GetAngle(inputDistance, CopyOfRange(_distance, i * dimensions, i * dimensions + dimensions), _sigma[i]);
+                value += _weights[i] * result;
             }
             return value;
         }

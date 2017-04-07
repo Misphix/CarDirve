@@ -63,7 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="Algorithms\GeneticAlgorithm.cs" />
     <Compile Include="Algorithms\Neuron.cs" />
-    <Compile Include="Algorithms\NormalAlgorithm.cs" />
+    <Compile Include="Algorithms\FuzzyAlgorithm.cs" />
     <Compile Include="Algorithms\Rbf.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="Controller\AlgorithController.cs" />

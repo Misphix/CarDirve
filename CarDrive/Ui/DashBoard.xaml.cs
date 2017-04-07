@@ -9,20 +9,20 @@ namespace CarDrive.Ui
     /// </summary>
     public partial class DashBoard
     {
-        public ObservableCollection<Algorithm> Algorithms { get; private set; }
+        public ObservableCollection<IAlgorithm> Algorithms { get; private set; }
         internal Controller.Controller Controller
         {
             private get { return _controller; }
             set
             {
                 _controller = value;
-                foreach (Algorithm algorithm in value.Algorithms)
+                foreach (IAlgorithm algorithm in value.Algorithms)
                 {
                     Algorithms.Add(algorithm);
                 }
             }
         }
-        public Algorithm SelectedAlgorithm
+        public IAlgorithm SelectedAlgorithm
         {
             get { return _selectedAlgorithm; }
             set
@@ -32,15 +32,15 @@ namespace CarDrive.Ui
             }
         }
         private Controller.Controller _controller;
-        private Algorithm _selectedAlgorithm;
+        private IAlgorithm _selectedAlgorithm;
 
         public DashBoard()
         {
-            Algorithms = new ObservableCollection<Algorithm>();
+            Algorithms = new ObservableCollection<IAlgorithm>();
             InitializeComponent();
         }
 
-        private void OnContentChanged(object sender, TextChangedEventArgs e)
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
         {
             Console.ScrollToEnd();
         }

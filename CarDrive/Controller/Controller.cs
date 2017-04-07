@@ -7,8 +7,8 @@ namespace CarDrive.Controller
 {
     abstract class Controller
     {
-        public readonly ObservableCollection<Algorithm> Algorithms;
-        public Algorithm SelectedAlgorithm { get; set; }
+        public readonly ObservableCollection<IAlgorithm> Algorithms;
+        public IAlgorithm SelectedAlgorithm { get; set; }
         internal readonly Car Car;
         internal readonly Recorder.Recorder Recorder;
         protected readonly BackgroundWorker _backgroundWorker = new BackgroundWorker();
@@ -21,9 +21,9 @@ namespace CarDrive.Controller
         {
             Car = new Car(redraw);
             Recorder = new Recorder.Recorder();
-            Algorithms = new ObservableCollection<Algorithm>
+            Algorithms = new ObservableCollection<IAlgorithm>
             {
-                new NormalAlgorithm(),
+                new FuzzyAlgorithm(),
                 new Algorithms.GeneticAlgorithm()
             };
         }

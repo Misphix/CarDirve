@@ -5,16 +5,16 @@ namespace CarDrive.Algorithms
 {
     class Neuron
     {
-        public double getAngle(double[] _input, double[] _distance, double _sigma)
+        public double GetAngle(double[] input, double[] distance, double sigma)
         {
-            Debug.Assert(_input.Length == _distance.Length);
+            Debug.Assert(input.Length == distance.Length);
             double vectorValue = 0;
-            for (int i = 0; i < _input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                vectorValue += Math.Pow(_input[i] - _distance[i], 2);
+                vectorValue += Math.Pow(input[i] - distance[i], 2);
             }
 
-            return Math.Exp((-1) * (vectorValue / (2 * Math.Pow(_sigma, 2))));
+            return Math.Exp((-1) * (vectorValue / (2 * Math.Pow(sigma, 2))));
         }
     }
 }

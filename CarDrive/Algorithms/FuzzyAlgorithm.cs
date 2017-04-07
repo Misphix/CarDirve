@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace CarDrive.Algorithms
 {
-    internal class NormalAlgorithm : Algorithm
+    internal class FuzzyAlgorithm : IAlgorithm
     {
         public string Name { get; }
         // Forward
@@ -22,12 +22,12 @@ namespace CarDrive.Algorithms
         private double _farForwardAlpha, _mediumForwardAlpha, _closeForwardAlpha;
         private double _largeDifferenceAlpha, _mediumDifferenceAlpha, _smallDifferenceAlpha;
 
-        internal NormalAlgorithm()
+        internal FuzzyAlgorithm()
         {
-            Name = "Normal Algorithm";
+            Name = "Fuzzy Algorithm";
         }
 
-        public double GetDegree(double forward, double difference)
+        private double GetDegree(double forward, double difference)
         {
 
             CalculateForward(forward);

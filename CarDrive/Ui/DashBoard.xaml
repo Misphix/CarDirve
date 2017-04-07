@@ -25,6 +25,6 @@
                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 TextChanged="OnContentChanged"/>
+                 TextChanged="OnTextChanged"/>
     </Grid>
 </UserControl>
