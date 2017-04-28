@@ -24,7 +24,8 @@ namespace CarDrive.Controller
             Algorithms = new ObservableCollection<IAlgorithm>
             {
                 new FuzzyAlgorithm(),
-                new Algorithms.GeneticAlgorithm()
+                new GeneticAlgorithm(),
+                new GeneticAlgorithm(@"PSO", @"pso_individual")
             };
         }
 

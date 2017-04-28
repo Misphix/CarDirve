@@ -7,7 +7,7 @@ namespace CarDrive.Algorithms
     class GeneticAlgorithm : IAlgorithm
     {
         public string Name { get; }
-        private const string Path = "individual";
+        private string _path = "individual";
         private int _neuralSize, _dataSize;
         private double _theta;
         private double[] _weight, _distance, _sigma;
@@ -17,7 +17,13 @@ namespace CarDrive.Algorithms
         {
             Name = "Genetic Algorithm";
             ReadIndividual();
+        }
 
+        public GeneticAlgorithm(string name, string path)
+        {
+            Name = name;
+            _path = path;
+            ReadIndividual();
         }
 
         public double GetDegree(double forward, double left, double right)
@@ -30,9 +36,9 @@ namespace CarDrive.Algorithms
 
         private void ReadIndividual()
         {
-            Debug.Assert(File.Exists(Path));
+            Debug.Assert(File.Exists(_path));
 
-            string[] content = File.ReadAllLines(Path);
+            string[] content = File.ReadAllLines(_path);
             foreach (string line in content)
             {
                 string[] tokens = line.Split(':');
